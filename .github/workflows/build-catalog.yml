@@ -1,0 +1,42 @@
+name: Build Catalog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "posts/**"
+      - "scripts/build-catalog.mjs"
+      - ".github/workflows/build-catalog.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # 需要完整 git 历史来取文件时间
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate catalog.json
+        run: node scripts/build-catalog.mjs
+
+      - name: Commit & Push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add catalog.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update catalog"
+            git push
+          fi
