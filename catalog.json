@@ -1,5 +1,15 @@
 {
-  "generatedAt": "2026-10-06T08:58:54.329Z",
-  "count": 0,
-  "posts": []
+  "generatedAt": "2026-10-06T09:11:15.518Z",
+  "count": 1,
+  "posts": [
+    {
+      "title": "拆书方法手册 · 内容整理报告",
+      "file": "拆书方法手册.html",
+      "url": "posts/%E6%8B%86%E4%B9%A6%E6%96%B9%E6%B3%95%E6%89%8B%E5%86%8C.html",
+      "date": "2026-10-06",
+      "updatedAt": "2026-10-06T17:09:06+08:00",
+      "description": "",
+      "tags": []
+    }
+  ]
 }
