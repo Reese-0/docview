@@ -1,563 +1,1089 @@
-<html lang="zh-CN"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>临床心理科研工作台 · 软件清单 / 学习路径 / 工作流</title>
-<style>
-  :root{
-    --ink:#1f2a36; --ink2:#4a5a68; --line:#dfe6ec;
-    --accent:#2f6f8f; --accent-soft:#e8f2f6;
-    --green:#3a7d5c; --green-soft:#e9f4ee;
-    --amber:#a06a1c; --amber-soft:#fbf3e4;
-    --red:#a64444; --red-soft:#faecec;
-    --bg:#f7f9fa; --card:#ffffff; --code:#f2f4f6;
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{font-family:"Source Han Serif SC","Noto Serif SC","Songti SC",Georgia,serif;
-       color:var(--ink);background:var(--bg);line-height:1.75}
-  .sans{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+<!DOCTYPE html>
+<html lang="zh-CN">
 
-  /* ===== 布局 ===== */
-  header.hero{background:linear-gradient(135deg,#234a5e,#2f6f8f);color:#fff;padding:56px 24px 48px;text-align:center}
-  header.hero h1{font-size:2.1rem;letter-spacing:.06em;font-weight:700}
-  header.hero p{margin-top:12px;opacity:.85;font-size:1rem}
-  header.hero .tags{margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-  header.hero .tag{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
-    border-radius:999px;padding:3px 14px;font-size:.82rem;font-family:-apple-system,"PingFang SC",sans-serif}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>临床心理科研工作台 · 软件清单 / 学习路径 / 工作流</title>
+  <style>
+    :root {
+      --ink: #1f2a36;
+      --ink2: #4a5a68;
+      --line: #dfe6ec;
+      --accent: #2f6f8f;
+      --accent-soft: #e8f2f6;
+      --green: #3a7d5c;
+      --green-soft: #e9f4ee;
+      --amber: #a06a1c;
+      --amber-soft: #fbf3e4;
+      --red: #a64444;
+      --red-soft: #faecec;
+      --bg: #f7f9fa;
+      --card: #ffffff;
+      --code: #f2f4f6;
+    }
 
-  nav.toc{position:sticky;top:0;z-index:50;background:#ffffffee;backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap;
-    font-family:-apple-system,"PingFang SC",sans-serif}
-  nav.toc a{display:inline-block;padding:12px 18px;color:var(--ink2);text-decoration:none;font-size:.9rem;border-bottom:2px solid transparent}
-  nav.toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
 
-  main{max-width:1080px;margin:0 auto;padding:32px 24px 96px}
-  section{margin-top:64px}
-  h2{font-size:1.5rem;padding-left:14px;border-left:5px solid var(--accent);margin-bottom:8px}
-  .lead{color:var(--ink2);margin:10px 0 24px;font-size:.98rem}
-  h3{font-size:1.12rem;margin:32px 0 12px;color:var(--accent)}
-  h4{font-size:1rem;margin:20px 0 8px}
+    html {
+      scroll-behavior: smooth;
+      /* iOS 兜底：任何漏网元素都不撑破视口 */
+      overflow-x: hidden;
+    }
 
-  /* ===== 卡片与表格 ===== */
-  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;
-    padding:20px 24px;margin:14px 0;box-shadow:0 1px 3px rgba(30,50,70,.05)}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-  @media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
-  table{width:100%;border-collapse:collapse;font-size:.92rem;background:#fff;
-    font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;margin:12px 0}
-  th{background:var(--accent-soft);color:#234a5e;text-align:left}
-  th,td{padding:9px 12px;border:1px solid var(--line);vertical-align:top}
-  tr:nth-child(even) td{background:#fbfcfd}
-  .pill{display:inline-block;border-radius:4px;padding:1px 8px;font-size:.78rem;font-family:-apple-system,sans-serif}
-  .p-green{background:var(--green-soft);color:var(--green)}
-  .p-amber{background:var(--amber-soft);color:var(--amber)}
-  .p-red{background:var(--red-soft);color:var(--red)}
-  .p-blue{background:var(--accent-soft);color:var(--accent)}
+    body {
+      font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", Georgia, serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.75;
+      overflow-x: hidden;
+      /* iOS 下禁止横向橡皮筋整体拖动 */
+    }
 
-  code,kbd{font-family:"SF Mono",Consolas,Menlo,monospace;font-size:.86em;
-    background:var(--code);border-radius:4px;padding:1px 6px}
-  pre{background:#22303c;color:#e8eef2;border-radius:8px;padding:16px 18px;
-    overflow-x:auto;font-size:.85rem;line-height:1.6;margin:10px 0;
-    font-family:"SF Mono",Consolas,Menlo,monospace}
-  pre .cm{color:#7d97a8} pre .kw{color:#8fd0ff} pre .st{color:#ffd58f}
-  details{border:1px solid var(--line);border-radius:8px;background:#fff;margin:10px 0}
-  details summary{cursor:pointer;padding:10px 16px;font-weight:600;font-size:.92rem;
-    color:var(--accent);list-style:none;font-family:-apple-system,"PingFang SC",sans-serif}
-  details summary::before{content:"▸ ";color:var(--ink2)}
-  details[open] summary::before{content:"▾ "}
-  details .body{padding:4px 18px 16px}
+    .sans {
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif
+    }
 
-  .note{border-left:4px solid var(--amber);background:var(--amber-soft);padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;font-size:.93rem}
-  .note.red{border-color:var(--red);background:var(--red-soft)}
-  .note.green{border-color:var(--green);background:var(--green-soft)}
-  .note b{display:block;margin-bottom:2px}
+    /* ===== 布局 ===== */
+    header.hero {
+      background: linear-gradient(135deg, #234a5e, #2f6f8f);
+      color: #fff;
+      padding: 56px 24px 48px;
+      text-align: center
+    }
 
-  figure{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px;margin:18px 0;text-align:center}
-  figcaption{font-size:.85rem;color:var(--ink2);margin-top:10px;font-family:-apple-system,"PingFang SC",sans-serif}
-  svg text{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+    header.hero h1 {
+      font-size: 2.1rem;
+      letter-spacing: .06em;
+      font-weight: 700
+    }
 
-  ul.tight li{margin:4px 0 4px 1.2em}
-  footer{border-top:1px solid var(--line);text-align:center;color:var(--ink2);
-    padding:28px;font-size:.85rem;font-family:-apple-system,"PingFang SC",sans-serif}
-</style>
+    header.hero p {
+      margin-top: 12px;
+      opacity: .85;
+      font-size: 1rem
+    }
+
+    header.hero .tags {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap
+    }
+
+    header.hero .tag {
+      background: rgba(255, 255, 255, .14);
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 999px;
+      padding: 3px 14px;
+      font-size: .82rem;
+      font-family: -apple-system, "PingFang SC", sans-serif
+    }
+
+    nav.toc {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #ffffffee;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: nowrap;
+      font-family: -apple-system, "PingFang SC", sans-serif
+    }
+
+    nav.toc::-webkit-scrollbar {
+      display: none
+    }
+
+    nav.toc a {
+      display: inline-block;
+      padding: 12px 18px;
+      color: var(--ink2);
+      text-decoration: none;
+      font-size: .9rem;
+      border-bottom: 2px solid transparent
+    }
+
+    nav.toc a:hover {
+      color: var(--accent);
+      border-bottom-color: var(--accent)
+    }
+
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 32px 24px 96px;
+      /* iOS 关键：防止内部超宽元素把整个页面撑开 */
+      min-width: 0;
+    }
+
+    section {
+      margin-top: 64px
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      padding-left: 14px;
+      border-left: 5px solid var(--accent);
+      margin-bottom: 8px
+    }
+
+    .lead {
+      color: var(--ink2);
+      margin: 10px 0 24px;
+      font-size: .98rem
+    }
+
+    h3 {
+      font-size: 1.12rem;
+      margin: 32px 0 12px;
+      color: var(--accent)
+    }
+
+    h4 {
+      font-size: 1rem;
+      margin: 20px 0 8px
+    }
+
+    /* ===== 卡片与表格 ===== */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 14px 0;
+      box-shadow: 0 1px 3px rgba(30, 50, 70, .05);
+      /* 卡片本身不许被内容撑破 */
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px
+    }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px
+    }
+
+    @media(max-width:820px) {
+
+      .grid2,
+      .grid3 {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* ===== 表格：iOS Safari 修复核心 ===== */
+    /* 1) 每个表格外面套一层 .table-wrap，负责横向滚动 */
+    .table-wrap {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 12px 0;
+      border-radius: 8px;
+      /* 滚动条不占位，视觉更干净 */
+      scrollbar-width: thin;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+      height: 6px
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+      background: #c7d5de;
+      border-radius: 3px
+    }
+
+    /* 2) 表格本身用 auto 布局 + 固定最小宽度，超出部分交给容器滚动 */
+    table {
+      width: 100%;
+      min-width: 460px;
+      /* 窄屏保持可读性；宽屏不受影响 */
+      border-collapse: collapse;
+      font-size: .92rem;
+      background: #fff;
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      margin: 0;
+      /* 由 .table-wrap 负责外边距 */
+      table-layout: auto;
+    }
+
+    th {
+      background: var(--accent-soft);
+      color: #234a5e;
+      text-align: left
+    }
+
+    th,
+    td {
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      vertical-align: top;
+      /* 3) 长英文串/长标识符强制换行，避免单元格撑到最大内容宽度 */
+      overflow-wrap: break-word;
+      word-break: break-word;
+      -webkit-hyphens: none;
+      hyphens: none;
+      /* iOS 上偶发的 min-width 计算异常，用这个抵消 */
+      max-width: 320px;
+    }
+
+    /* 首列尽量窄一些，给其他列留空间 */
+    .table-wrap td:first-child,
+    .table-wrap th:first-child {
+      white-space: nowrap;
+    }
+
+    tr:nth-child(even) td {
+      background: #fbfcfd
+    }
+
+    .pill {
+      display: inline-block;
+      border-radius: 4px;
+      padding: 1px 8px;
+      font-size: .78rem;
+      font-family: -apple-system, sans-serif;
+      white-space: nowrap;
+    }
+
+    .p-green {
+      background: var(--green-soft);
+      color: var(--green)
+    }
+
+    .p-amber {
+      background: var(--amber-soft);
+      color: var(--amber)
+    }
+
+    .p-red {
+      background: var(--red-soft);
+      color: var(--red)
+    }
+
+    .p-blue {
+      background: var(--accent-soft);
+      color: var(--accent)
+    }
+
+    code,
+    kbd {
+      font-family: "SF Mono", Consolas, Menlo, monospace;
+      font-size: .86em;
+      background: var(--code);
+      border-radius: 4px;
+      padding: 1px 6px;
+      /* 行内代码可以换行 */
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    pre {
+      background: #22303c;
+      color: #e8eef2;
+      border-radius: 8px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      font-size: .85rem;
+      line-height: 1.6;
+      margin: 10px 0;
+      font-family: "SF Mono", Consolas, Menlo, monospace
+    }
+
+    pre .cm {
+      color: #7d97a8
+    }
+
+    pre .kw {
+      color: #8fd0ff
+    }
+
+    pre .st {
+      color: #ffd58f
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      margin: 10px 0;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    details summary {
+      cursor: pointer;
+      padding: 10px 16px;
+      font-weight: 600;
+      font-size: .92rem;
+      color: var(--accent);
+      list-style: none;
+      font-family: -apple-system, "PingFang SC", sans-serif
+    }
+
+    details summary::before {
+      content: "▸ ";
+      color: var(--ink2)
+    }
+
+    details[open] summary::before {
+      content: "▾ "
+    }
+
+    details .body {
+      padding: 4px 18px 16px
+    }
+
+    .note {
+      border-left: 4px solid var(--amber);
+      background: var(--amber-soft);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+      font-size: .93rem
+    }
+
+    .note.red {
+      border-color: var(--red);
+      background: var(--red-soft)
+    }
+
+    .note.green {
+      border-color: var(--green);
+      background: var(--green-soft)
+    }
+
+    .note b {
+      display: block;
+      margin-bottom: 2px
+    }
+
+    figure {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 22px;
+      margin: 18px 0;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    figure svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+    }
+
+    figcaption {
+      font-size: .85rem;
+      color: var(--ink2);
+      margin-top: 10px;
+      font-family: -apple-system, "PingFang SC", sans-serif
+    }
+
+    svg text {
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif
+    }
+
+    ul.tight li {
+      margin: 4px 0 4px 1.2em
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      text-align: center;
+      color: var(--ink2);
+      padding: 28px;
+      font-size: .85rem;
+      font-family: -apple-system, "PingFang SC", sans-serif
+    }
+
+    /* 小屏额外微调 */
+    @media (max-width:520px) {
+      main {
+        padding: 24px 16px 72px
+      }
+
+      header.hero {
+        padding: 44px 18px 38px
+      }
+
+      header.hero h1 {
+        font-size: 1.6rem
+      }
+
+      .card {
+        padding: 16px 16px
+      }
+
+      table {
+        font-size: .86rem
+      }
+
+      th,
+      td {
+        padding: 8px 10px
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<header class="hero">
-  <h1>临床心理科研工作台</h1>
-  <p>开源为主体 · Python 为核心 · AI Agent 全流程协作的科研体系</p>
-  <div class="tags">
-    <span class="tag">软件清单</span><span class="tag">16 周学习路径</span>
-    <span class="tag">标准工作流</span><span class="tag">速查手册</span><span class="tag">Agent 协作</span>
-  </div>
-</header>
-
-<nav class="toc">
-  <a href="#arch">体系架构</a>
-  <a href="#software">软件清单</a>
-  <a href="#learning">学习路径</a>
-  <a href="#workflow">标准工作流</a>
-  <a href="#cheatsheet">知识速查</a>
-  <a href="#workspace">工作空间与配置</a>
-</nav>
-
-<main>
-
-<!-- ================= 架构 ================= -->
-<section id="arch">
-  <h2>一、体系架构总览</h2>
-  <p class="lead">八个环节环环相扣，Python 代码是贯穿始终的主线，AI Agent 在每一环都有明确的介入点。</p>
-
-  <figure>
-  <svg viewBox="0 0 1000 300" width="100%" role="img" aria-label="科研工作流架构图">
-    <defs>
-      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-        <path d="M0,0 L10,5 L0,10 z" fill="#2f6f8f"></path>
-      </marker>
-    </defs>
-    <!-- 环节节点 -->
-    <g font-size="13">
-      <!-- row1 -->
-      <g>
-        <rect x="20" y="40" width="200" height="78" rx="10" fill="#e8f2f6" stroke="#2f6f8f"></rect>
-        <text x="120" y="66" text-anchor="middle" font-weight="700" fill="#234a5e">1 选题与文献</text>
-        <text x="120" y="86" text-anchor="middle" fill="#4a5a68" font-size="11.5">Zotero + Zotero MCP</text>
-        <text x="120" y="103" text-anchor="middle" fill="#4a5a68" font-size="11.5">ASReview（系统综述）</text>
-      </g>
-      <g>
-        <rect x="270" y="40" width="200" height="78" rx="10" fill="#e8f2f6" stroke="#2f6f8f"></rect>
-        <text x="370" y="66" text-anchor="middle" font-weight="700" fill="#234a5e">2 设计与预注册</text>
-        <text x="370" y="86" text-anchor="middle" fill="#4a5a68" font-size="11.5">Quarto 写方案 · OSF 预注册</text>
-        <text x="370" y="103" text-anchor="middle" fill="#4a5a68" font-size="11.5">G*Power 样本量</text>
-      </g>
-      <g>
-        <rect x="520" y="40" width="200" height="78" rx="10" fill="#e8f2f6" stroke="#2f6f8f"></rect>
-        <text x="620" y="66" text-anchor="middle" font-weight="700" fill="#234a5e">3 数据收集</text>
-        <text x="620" y="86" text-anchor="middle" fill="#4a5a68" font-size="11.5">REDCap（临床）· Pavlovia</text>
-        <text x="620" y="103" text-anchor="middle" fill="#4a5a68" font-size="11.5">问卷星 / Credamo（国内样本）</text>
-      </g>
-      <g>
-        <rect x="770" y="40" width="210" height="78" rx="10" fill="#e8f2f6" stroke="#2f6f8f"></rect>
-        <text x="875" y="66" text-anchor="middle" font-weight="700" fill="#234a5e">4 数据清洗</text>
-        <text x="875" y="86" text-anchor="middle" fill="#4a5a68" font-size="11.5">pandas · DuckDB（大数据）</text>
-        <text x="875" y="103" text-anchor="middle" fill="#4a5a68" font-size="11.5">raw 只读 → processed 脱敏</text>
-      </g>
-      <!-- row2 -->
-      <g>
-        <rect x="20" y="180" width="200" height="78" rx="10" fill="#e9f4ee" stroke="#3a7d5c"></rect>
-        <text x="120" y="206" text-anchor="middle" font-weight="700" fill="#2c5c45">5 统计分析</text>
-        <text x="120" y="226" text-anchor="middle" fill="#4a5a68" font-size="11.5">pingouin · statsmodels</text>
-        <text x="120" y="243" text-anchor="middle" fill="#4a5a68" font-size="11.5">semopy / lavaan / Mplus</text>
-      </g>
-      <g>
-        <rect x="270" y="180" width="200" height="78" rx="10" fill="#e9f4ee" stroke="#3a7d5c"></rect>
-        <text x="370" y="206" text-anchor="middle" font-weight="700" fill="#2c5c45">6 可视化</text>
-        <text x="370" y="226" text-anchor="middle" fill="#4a5a68" font-size="11.5">matplotlib · seaborn</text>
-        <text x="370" y="243" text-anchor="middle" fill="#4a5a68" font-size="11.5">plotly（交互）</text>
-      </g>
-      <g>
-        <rect x="520" y="180" width="200" height="78" rx="10" fill="#e9f4ee" stroke="#3a7d5c"></rect>
-        <text x="620" y="206" text-anchor="middle" font-weight="700" fill="#2c5c45">7 论文写作</text>
-        <text x="620" y="226" text-anchor="middle" fill="#4a5a68" font-size="11.5">Quarto + Zotero 引文</text>
-        <text x="620" y="243" text-anchor="middle" fill="#4a5a68" font-size="11.5">数字随代码自动更新</text>
-      </g>
-      <g>
-        <rect x="770" y="180" width="210" height="78" rx="10" fill="#e9f4ee" stroke="#3a7d5c"></rect>
-        <text x="875" y="206" text-anchor="middle" font-weight="700" fill="#2c5c45">8 归档复现</text>
-        <text x="875" y="226" text-anchor="middle" fill="#4a5a68" font-size="11.5">Git 版本管理</text>
-        <text x="875" y="243" text-anchor="middle" fill="#4a5a68" font-size="11.5">.venv 环境锁定</text>
-      </g>
-    </g>
-    <!-- 箭头 -->
-    <g stroke="#2f6f8f" stroke-width="2" fill="none">
-      <line x1="220" y1="79" x2="266" y2="79" marker-end="url(#arr)"></line>
-      <line x1="470" y1="79" x2="516" y2="79" marker-end="url(#arr)"></line>
-      <line x1="720" y1="79" x2="766" y2="79" marker-end="url(#arr)"></line>
-      <path d="M 875 118 L 875 176" marker-end="url(#arr)"></path>
-      <line x1="770" y1="219" x2="724" y2="219" marker-end="url(#arr)"></line>
-      <line x1="520" y1="219" x2="474" y2="219" marker-end="url(#arr)"></line>
-      <line x1="270" y1="219" x2="224" y2="219" marker-end="url(#arr)"></line>
-    </g>
-    <!-- AI 层 -->
-    <rect x="20" y="140" width="960" height="26" rx="13" fill="#234a5e"></rect>
-    <text x="500" y="158" text-anchor="middle" fill="#fff" font-size="12.5">AI Agent 贯穿全程：检索文献 · 生成代码 · 解读结果 · 润色文稿　（统计决策与结果审定由研究者负责）</text>
-  </svg>
-  <figcaption>图 1 · 八环节科研工作流架构。绿色为产出侧（分析与成文），蓝色为输入侧（设计与收数）。</figcaption>
-  </figure>
-
-  <div class="grid3">
-    <div class="card"><h4>两条总原则</h4>
-      <ul class="tight">
-        <li><b>研究驱动学习</b>：每个技能用真实研究任务掌握，不上编程课</li>
-        <li><b>AI 结对</b>：研究者提需求、审结果、做判断；AI 写代码、做执行</li>
-      </ul>
+  <header class="hero">
+    <h1>临床心理科研工作台</h1>
+    <p>开源为主体 · Python 为核心 · AI Agent 全流程协作的科研体系</p>
+    <div class="tags">
+      <span class="tag">软件清单</span><span class="tag">16 周学习路径</span>
+      <span class="tag">标准工作流</span><span class="tag">速查手册</span><span class="tag">Agent 协作</span>
     </div>
-    <div class="card"><h4>三条铁律</h4>
-      <ul class="tight">
-        <li>原始数据只读，绝不在 Excel 手改</li>
-        <li>患者数据脱敏后才交给 AI</li>
-        <li>统计决策人来定，代码 AI 写，结果人来审</li>
-      </ul>
-    </div>
-    <div class="card"><h4>效率曲线</h4>
-      <ul class="tight">
-        <li>1–3 个月：学习阵痛期，效率下降</li>
-        <li>3–6 个月：追平原工具链</li>
-        <li>6 个月+：稳定反超，AI 红利持续放大</li>
-      </ul>
-    </div>
-  </div>
-</section>
+  </header>
 
-<!-- ================= 软件清单 ================= -->
-<section id="software">
-  <h2>二、软件清单（定稿）</h2>
-  <p class="lead">核心层开源、每项目独立环境；保留少数商业软件填补开源缺口。</p>
+  <nav class="toc">
+    <a href="#arch">体系架构</a>
+    <a href="#software">软件清单</a>
+    <a href="#learning">学习路径</a>
+    <a href="#workflow">标准工作流</a>
+    <a href="#cheatsheet">知识速查</a>
+    <a href="#workspace">工作空间与配置</a>
+  </nav>
 
-  <h3>2.1 新旧工具替代映射</h3>
-  <table>
-    <tbody><tr><th>原有软件</th><th>替代方案</th><th>开源</th><th>AI 可调用</th><th>迁移难度</th></tr>
-    <tr><td>SPSS</td><td><b>pingouin + statsmodels + scipy</b></td><td><span class="pill p-green">是</span></td><td>脚本 / MCP</td><td><span class="pill p-amber">中</span></td></tr>
-    <tr><td>Mplus</td><td><b>semopy</b>（Python）+ <b>lavaan</b>（R）；LCA/LPA 仍用 Mplus</td><td><span class="pill p-green">是</span></td><td>脚本</td><td><span class="pill p-green">低</span></td></tr>
-    <tr><td>E-Prime</td><td><b>PsychoPy</b> + Pavlovia 在线收数</td><td><span class="pill p-green">是</span></td><td>脚本生成实验</td><td><span class="pill p-green">低</span></td></tr>
-    <tr><td>MATLAB</td><td><b>NumPy / SciPy</b>（EEG 用 MNE-Python）</td><td><span class="pill p-green">是</span></td><td>脚本</td><td><span class="pill p-green">低</span></td></tr>
-    <tr><td>Origin</td><td><b>matplotlib + seaborn + plotly</b></td><td><span class="pill p-green">是</span></td><td>脚本</td><td><span class="pill p-amber">中</span></td></tr>
-    <tr><td>RStudio</td><td><b>VS Code</b>（Python/R/Jupyter/Quarto 统一 IDE）</td><td><span class="pill p-green">是</span></td><td>—</td><td><span class="pill p-green">低</span></td></tr>
-    <tr><td>JASP</td><td><b>保留</b>：GUI 交叉验证、对接 SPSS 用户</td><td><span class="pill p-green">是</span></td><td>人工使用</td><td>—</td></tr>
-    <tr><td>Zotero</td><td><b>保留 + 升级</b>：接入 Zotero MCP，AI 直接检索文献库</td><td><span class="pill p-green">是</span></td><td><b>MCP</b></td><td>—</td></tr>
-  </tbody></table>
+  <main>
 
-  <h3>2.2 分层清单</h3>
-  <div class="grid3">
-    <div class="card">
-      <h4>核心层（开源 · 必装）</h4>
-      <ul class="tight">
-        <li>Python 3.11 + <b>uv</b> 包管理</li>
-        <li>VS Code · Quarto · Git</li>
-        <li>Zotero 7 + Better BibTeX + <b>zotero-mcp</b></li>
-        <li>PsychoPy（Standalone 版）</li>
-      </ul>
-      <h4 style="margin-top:14px">Python 包（项目 .venv）</h4>
-      <ul class="tight">
-        <li>数据：pandas · pyreadstat · duckdb · pyarrow</li>
-        <li>统计：scipy · statsmodels · <b>pingouin</b> · <b>semopy</b> · factor_analyzer</li>
-        <li>可视化：matplotlib · seaborn · plotly</li>
-        <li>工作流：jupyter ·（rpy2，Windows 可省）</li>
-      </ul>
-      <h4 style="margin-top:14px">R 包（全局，共享）</h4>
-      <ul class="tight">
-        <li>lavaan · tidySEM/mclust · psych · mirt</li>
-        <li>lme4 · mice · metafor · pwr</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h4>保留的商业 / 免费软件</h4>
-      <table>
-        <tbody><tr><th>软件</th><th>使用场景</th></tr>
-        <tr><td><b>Mplus</b></td><td>仅 LCA/LPA、Monte Carlo 功效模拟（开源缺口）</td></tr>
-        <tr><td><b>JASP</b></td><td>结果交叉验证、教学</td></tr>
-        <tr><td><b>G*Power</b></td><td>功效分析、样本量（免费非开源）</td></tr>
-        <tr><td><b>REDCap</b></td><td>临床患者数据、随访（机构免费，向单位申请）</td></tr>
-        <tr><td>问卷星 / Credamo</td><td>国内样本招募（按需付费）</td></tr>
-      </tbody></table>
-      <div class="note"><b>为什么留 Mplus</b>semopy 不覆盖潜类别/潜剖面分析（LCA/LPA）、MLR/WLSMV 完整稳健估计、多水平 SEM。临床心理的症状亚型研究常用 LPA——这是唯一"不迁移"的统计场景。</div>
-    </div>
-    <div class="card">
-      <h4>选装（按需启用）</h4>
-      <ul class="tight">
-        <li><b>ASReview</b>：AI 辅助系统综述文献筛选（做 Meta 分析前必装）</li>
-        <li><b>jsPsych</b>：深度定制网页实验</li>
-        <li><b>polars</b>：百万行级数据加速</li>
-        <li><b>PyMC / bambi</b>：贝叶斯分析</li>
-        <li><b>MNE-Python</b>：EEG 分析</li>
-        <li><b>Taguette</b>：质性访谈编码（替代 NVivo）</li>
-      </ul>
-      <div class="note green"><b>精简原则</b>选装项不预装，项目需要时 <code>uv pip install</code> 即用，避免环境臃肿。</div>
-    </div>
-  </div>
-</section>
+    <!-- ================= 架构 ================= -->
+    <section id="arch">
+      <h2>一、体系架构总览</h2>
+      <p class="lead">八个环节环环相扣，Python 代码是贯穿始终的主线，AI Agent 在每一环都有明确的介入点。</p>
 
-<!-- ================= 学习路径 ================= -->
-<section id="learning">
-  <h2>三、16 周学习路径</h2>
-  <p class="lead">六阶段递进，每阶段用真实研究任务验收。真正的学习曲线是"向 AI 精确描述研究需求"的能力，而非背语法。</p>
+      <figure>
+        <svg viewBox="0 0 1000 300" width="100%" role="img" aria-label="科研工作流架构图">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7"
+              orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2f6f8f"></path>
+            </marker>
+          </defs>
+          <!-- 环节节点 -->
+          <g font-size="13">
+            <!-- row1 -->
+            <g>
+              <rect x="20" y="40" width="200" height="78" rx="10" fill="#e8f2f6" stroke="#2f6f8f"></rect>
+              <text x="120" y="66" text-anchor="middle" font-weight="700" fill="#234a5e">1 选题与文献</text>
+              <text x="120" y="86" text-anchor="middle" fill="#4a5a68" font-size="11.5">Zotero + Zotero MCP</text>
+              <text x="120" y="103" text-anchor="middle" fill="#4a5a68" font-size="11.5">ASReview（系统综述）</text>
+            </g>
+            <g>
+              <rect x="270" y="40" width="200" height="78" rx="10" fill="#e8f2f6" stroke="#2f6f8f"></rect>
+              <text x="370" y="66" text-anchor="middle" font-weight="700" fill="#234a5e">2 设计与预注册</text>
+              <text x="370" y="86" text-anchor="middle" fill="#4a5a68" font-size="11.5">Quarto 写方案 · OSF 预注册</text>
+              <text x="370" y="103" text-anchor="middle" fill="#4a5a68" font-size="11.5">G*Power 样本量</text>
+            </g>
+            <g>
+              <rect x="520" y="40" width="200" height="78" rx="10" fill="#e8f2f6" stroke="#2f6f8f"></rect>
+              <text x="620" y="66" text-anchor="middle" font-weight="700" fill="#234a5e">3 数据收集</text>
+              <text x="620" y="86" text-anchor="middle" fill="#4a5a68" font-size="11.5">REDCap（临床）· Pavlovia</text>
+              <text x="620" y="103" text-anchor="middle" fill="#4a5a68" font-size="11.5">问卷星 / Credamo（国内样本）</text>
+            </g>
+            <g>
+              <rect x="770" y="40" width="210" height="78" rx="10" fill="#e8f2f6" stroke="#2f6f8f"></rect>
+              <text x="875" y="66" text-anchor="middle" font-weight="700" fill="#234a5e">4 数据清洗</text>
+              <text x="875" y="86" text-anchor="middle" fill="#4a5a68" font-size="11.5">pandas · DuckDB（大数据）</text>
+              <text x="875" y="103" text-anchor="middle" fill="#4a5a68" font-size="11.5">raw 只读 → processed 脱敏</text>
+            </g>
+            <!-- row2 -->
+            <g>
+              <rect x="20" y="180" width="200" height="78" rx="10" fill="#e9f4ee" stroke="#3a7d5c"></rect>
+              <text x="120" y="206" text-anchor="middle" font-weight="700" fill="#2c5c45">5 统计分析</text>
+              <text x="120" y="226" text-anchor="middle" fill="#4a5a68" font-size="11.5">pingouin · statsmodels</text>
+              <text x="120" y="243" text-anchor="middle" fill="#4a5a68" font-size="11.5">semopy / lavaan / Mplus</text>
+            </g>
+            <g>
+              <rect x="270" y="180" width="200" height="78" rx="10" fill="#e9f4ee" stroke="#3a7d5c"></rect>
+              <text x="370" y="206" text-anchor="middle" font-weight="700" fill="#2c5c45">6 可视化</text>
+              <text x="370" y="226" text-anchor="middle" fill="#4a5a68" font-size="11.5">matplotlib · seaborn</text>
+              <text x="370" y="243" text-anchor="middle" fill="#4a5a68" font-size="11.5">plotly（交互）</text>
+            </g>
+            <g>
+              <rect x="520" y="180" width="200" height="78" rx="10" fill="#e9f4ee" stroke="#3a7d5c"></rect>
+              <text x="620" y="206" text-anchor="middle" font-weight="700" fill="#2c5c45">7 论文写作</text>
+              <text x="620" y="226" text-anchor="middle" fill="#4a5a68" font-size="11.5">Quarto + Zotero 引文</text>
+              <text x="620" y="243" text-anchor="middle" fill="#4a5a68" font-size="11.5">数字随代码自动更新</text>
+            </g>
+            <g>
+              <rect x="770" y="180" width="210" height="78" rx="10" fill="#e9f4ee" stroke="#3a7d5c"></rect>
+              <text x="875" y="206" text-anchor="middle" font-weight="700" fill="#2c5c45">8 归档复现</text>
+              <text x="875" y="226" text-anchor="middle" fill="#4a5a68" font-size="11.5">Git 版本管理</text>
+              <text x="875" y="243" text-anchor="middle" fill="#4a5a68" font-size="11.5">.venv 环境锁定</text>
+            </g>
+          </g>
+          <!-- 箭头 -->
+          <g stroke="#2f6f8f" stroke-width="2" fill="none">
+            <line x1="220" y1="79" x2="266" y2="79" marker-end="url(#arr)"></line>
+            <line x1="470" y1="79" x2="516" y2="79" marker-end="url(#arr)"></line>
+            <line x1="720" y1="79" x2="766" y2="79" marker-end="url(#arr)"></line>
+            <path d="M 875 118 L 875 176" marker-end="url(#arr)"></path>
+            <line x1="770" y1="219" x2="724" y2="219" marker-end="url(#arr)"></line>
+            <line x1="520" y1="219" x2="474" y2="219" marker-end="url(#arr)"></line>
+            <line x1="270" y1="219" x2="224" y2="219" marker-end="url(#arr)"></line>
+          </g>
+          <!-- AI 层 -->
+          <rect x="20" y="140" width="960" height="26" rx="13" fill="#234a5e"></rect>
+          <text x="500" y="158" text-anchor="middle" fill="#fff" font-size="12.5">AI Agent 贯穿全程：检索文献 · 生成代码 · 解读结果 ·
+            润色文稿　（统计决策与结果审定由研究者负责）</text>
+        </svg>
+        <figcaption>图 1 · 八环节科研工作流架构。绿色为产出侧（分析与成文），蓝色为输入侧（设计与收数）。</figcaption>
+      </figure>
 
-  <figure>
-  <svg viewBox="0 0 1000 150" width="100%" role="img" aria-label="学习路径时间轴">
-    <line x1="40" y1="70" x2="960" y2="70" stroke="#dfe6ec" stroke-width="6" stroke-linecap="round"></line>
-    <!-- 阶段段 -->
-    <g>
-      <line x1="40" y1="70" x2="150" y2="70" stroke="#9db8c6" stroke-width="6" stroke-linecap="round"></line>
-      <line x1="150" y1="70" x2="265" y2="70" stroke="#6e9ab0" stroke-width="6" stroke-linecap="round"></line>
-      <line x1="265" y1="70" x2="440" y2="70" stroke="#2f6f8f" stroke-width="6" stroke-linecap="round"></line>
-      <line x1="440" y1="70" x2="615" y2="70" stroke="#3a7d5c" stroke-width="6" stroke-linecap="round"></line>
-      <line x1="615" y1="70" x2="730" y2="70" stroke="#a06a1c" stroke-width="6" stroke-linecap="round"></line>
-      <line x1="730" y1="70" x2="845" y2="70" stroke="#7a5a9e" stroke-width="6" stroke-linecap="round"></line>
-      <line x1="845" y1="70" x2="960" y2="70" stroke="#a64444" stroke-width="6" stroke-linecap="round"></line>
-    </g>
-    <g font-size="12" text-anchor="middle" fill="#1f2a36">
-      <circle cx="95" cy="70" r="7" fill="#9db8c6"></circle><text x="95" y="42" font-weight="700">环境熟练</text><text x="95" y="98" fill="#4a5a68">第 1–2 周</text>
-      <circle cx="207" cy="70" r="7" fill="#6e9ab0"></circle><text x="207" y="42" font-weight="700">数据清洗</text><text x="207" y="98" fill="#4a5a68">第 3–4 周</text>
-      <circle cx="352" cy="70" r="7" fill="#2f6f8f"></circle><text x="352" y="42" font-weight="700">统计迁移</text><text x="352" y="98" fill="#4a5a68">第 5–7 周</text>
-      <circle cx="527" cy="70" r="7" fill="#3a7d5c"></circle><text x="527" y="42" font-weight="700">SEM 迁移</text><text x="527" y="98" fill="#4a5a68">第 8–10 周</text>
-      <circle cx="672" cy="70" r="7" fill="#a06a1c"></circle><text x="672" y="42" font-weight="700">实验收数</text><text x="672" y="98" fill="#4a5a68">第 11–12 周</text>
-      <circle cx="787" cy="70" r="7" fill="#7a5a9e"></circle><text x="787" y="42" font-weight="700">Quarto 写作</text><text x="787" y="98" fill="#4a5a68">第 13–14 周</text>
-      <circle cx="902" cy="70" r="7" fill="#a64444"></circle><text x="902" y="42" font-weight="700">大数据进阶</text><text x="902" y="98" fill="#4a5a68">第 15 周+</text>
-    </g>
-  </svg>
-  <figcaption>图 2 · 学习路径时间轴。第 7 周（统计迁移完成）与第 14 周（首篇 Quarto 论文）是两个关键里程碑。</figcaption>
-  </figure>
-
-  <details open=""><summary>阶段 0–1 · 环境熟练（1–2 周）→ 数据清洗（3–4 周）</summary><div class="body">
-    <div class="grid2">
-      <div>
-        <h4>阶段 0 · 环境熟练</h4>
-        <ul class="tight">
-          <li>VS Code 打开文件夹 → 新建 <code>.ipynb</code> → 跑通第一行代码</li>
-          <li>学会 <code>uv pip install 包名</code> 管理环境</li>
-          <li>AI 练习：把任何报错直接贴给 AI，把它当随身导师</li>
-          <li><b>验收</b>：独立打开 notebook、读入 CSV、查看数据</li>
-        </ul>
+      <div class="grid3">
+        <div class="card">
+          <h4>两条总原则</h4>
+          <ul class="tight">
+            <li><b>研究驱动学习</b>：每个技能用真实研究任务掌握，不上编程课</li>
+            <li><b>AI 结对</b>：研究者提需求、审结果、做判断；AI 写代码、做执行</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>三条铁律</h4>
+          <ul class="tight">
+            <li>原始数据只读，绝不在 Excel 手改</li>
+            <li>患者数据脱敏后才交给 AI</li>
+            <li>统计决策人来定，代码 AI 写，结果人来审</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>效率曲线</h4>
+          <ul class="tight">
+            <li>1–3 个月：学习阵痛期，效率下降</li>
+            <li>3–6 个月：追平原工具链</li>
+            <li>6 个月+：稳定反超，AI 红利持续放大</li>
+          </ul>
+        </div>
       </div>
-      <div>
-        <h4>阶段 1 · 数据清洗（最重要的基本功）</h4>
-        <ul class="tight">
-          <li>教材：<b>拿一份自己已有的 SPSS 数据</b>（.sav 用 pyreadstat 读入）</li>
-          <li>任务：筛有效被试 → 反向题重编码 → 算量表总分 → 缺失值统计 → 导出 Parquet</li>
-          <li>AI 练习："q3、q7、q12 是 1–5 点反向计分，帮我重编码并计算总分"——重点训练<b>读懂代码、核对结果</b></li>
-          <li><b>验收</b>：清洗结果与原 SPSS 处理完全一致</li>
-        </ul>
+    </section>
+
+    <!-- ================= 软件清单 ================= -->
+    <section id="software">
+      <h2>二、软件清单（定稿）</h2>
+      <p class="lead">核心层开源、每项目独立环境；保留少数商业软件填补开源缺口。</p>
+
+      <h3>2.1 新旧工具替代映射</h3>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr>
+              <th>原有软件</th>
+              <th>替代方案</th>
+              <th>开源</th>
+              <th>AI 可调用</th>
+              <th>迁移难度</th>
+            </tr>
+            <tr>
+              <td>SPSS</td>
+              <td><b>pingouin + statsmodels + scipy</b></td>
+              <td><span class="pill p-green">是</span></td>
+              <td>脚本 / MCP</td>
+              <td><span class="pill p-amber">中</span></td>
+            </tr>
+            <tr>
+              <td>Mplus</td>
+              <td><b>semopy</b>（Python）+ <b>lavaan</b>（R）；LCA/LPA 仍用 Mplus</td>
+              <td><span class="pill p-green">是</span></td>
+              <td>脚本</td>
+              <td><span class="pill p-green">低</span></td>
+            </tr>
+            <tr>
+              <td>E-Prime</td>
+              <td><b>PsychoPy</b> + Pavlovia 在线收数</td>
+              <td><span class="pill p-green">是</span></td>
+              <td>脚本生成实验</td>
+              <td><span class="pill p-green">低</span></td>
+            </tr>
+            <tr>
+              <td>MATLAB</td>
+              <td><b>NumPy / SciPy</b>（EEG 用 MNE-Python）</td>
+              <td><span class="pill p-green">是</span></td>
+              <td>脚本</td>
+              <td><span class="pill p-green">低</span></td>
+            </tr>
+            <tr>
+              <td>Origin</td>
+              <td><b>matplotlib + seaborn + plotly</b></td>
+              <td><span class="pill p-green">是</span></td>
+              <td>脚本</td>
+              <td><span class="pill p-amber">中</span></td>
+            </tr>
+            <tr>
+              <td>RStudio</td>
+              <td><b>VS Code</b>（Python/R/Jupyter/Quarto 统一 IDE）</td>
+              <td><span class="pill p-green">是</span></td>
+              <td>—</td>
+              <td><span class="pill p-green">低</span></td>
+            </tr>
+            <tr>
+              <td>JASP</td>
+              <td><b>保留</b>：GUI 交叉验证、对接 SPSS 用户</td>
+              <td><span class="pill p-green">是</span></td>
+              <td>人工使用</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Zotero</td>
+              <td><b>保留 + 升级</b>：接入 Zotero MCP，AI 直接检索文献库</td>
+              <td><span class="pill p-green">是</span></td>
+              <td><b>MCP</b></td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </div>
-  </div></details>
 
-  <details><summary>阶段 2–3 · 统计迁移（5–7 周）→ SEM 迁移（8–10 周）</summary><div class="body">
-    <div class="grid2">
-      <div>
-        <h4>阶段 2 · 统计迁移</h4>
-        <ul class="tight">
-          <li>教材：<b>选一篇自己已发表的论文</b>，用代码重做全部统计</li>
-          <li>覆盖：信度、t 检验、ANOVA+事后检验、相关、回归、卡方</li>
-          <li>关键认知：pingouin 自带效应量/检验力/Bayes Factor，都要会解读（审稿加分项）</li>
-          <li>进阶：重复测量用 <code>mixed_anova</code>；中介用 <code>mediation_analysis</code></li>
-          <li><b>验收</b>：全部数字与原论文吻合，形成「常用分析模板 notebook」</li>
-        </ul>
+      <h3>2.2 分层清单</h3>
+      <div class="grid3">
+        <div class="card">
+          <h4>核心层（开源 · 必装）</h4>
+          <ul class="tight">
+            <li>Python 3.11 + <b>uv</b> 包管理</li>
+            <li>VS Code · Quarto · Git</li>
+            <li>Zotero 7 + Better BibTeX + <b>zotero-mcp</b></li>
+            <li>PsychoPy（Standalone 版）</li>
+          </ul>
+          <h4 style="margin-top:14px">Python 包（项目 .venv）</h4>
+          <ul class="tight">
+            <li>数据：pandas · pyreadstat · duckdb · pyarrow</li>
+            <li>统计：scipy · statsmodels · <b>pingouin</b> · <b>semopy</b> · factor_analyzer</li>
+            <li>可视化：matplotlib · seaborn · plotly</li>
+            <li>工作流：jupyter ·（rpy2，Windows 可省）</li>
+          </ul>
+          <h4 style="margin-top:14px">R 包（全局，共享）</h4>
+          <ul class="tight">
+            <li>lavaan · tidySEM/mclust · psych · mirt</li>
+            <li>lme4 · mice · metafor · pwr</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>保留的商业 / 免费软件</h4>
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr>
+                  <th>软件</th>
+                  <th>使用场景</th>
+                </tr>
+                <tr>
+                  <td><b>Mplus</b></td>
+                  <td>仅 LCA/LPA、Monte Carlo 功效模拟（开源缺口）</td>
+                </tr>
+                <tr>
+                  <td><b>JASP</b></td>
+                  <td>结果交叉验证、教学</td>
+                </tr>
+                <tr>
+                  <td><b>G*Power</b></td>
+                  <td>功效分析、样本量（免费非开源）</td>
+                </tr>
+                <tr>
+                  <td><b>REDCap</b></td>
+                  <td>临床患者数据、随访（机构免费，向单位申请）</td>
+                </tr>
+                <tr>
+                  <td>问卷星 / Credamo</td>
+                  <td>国内样本招募（按需付费）</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note"><b>为什么留 Mplus</b>semopy 不覆盖潜类别/潜剖面分析（LCA/LPA）、MLR/WLSMV 完整稳健估计、多水平 SEM。临床心理的症状亚型研究常用
+            LPA——这是唯一"不迁移"的统计场景。</div>
+        </div>
+        <div class="card">
+          <h4>选装（按需启用）</h4>
+          <ul class="tight">
+            <li><b>ASReview</b>：AI 辅助系统综述文献筛选（做 Meta 分析前必装）</li>
+            <li><b>jsPsych</b>：深度定制网页实验</li>
+            <li><b>polars</b>：百万行级数据加速</li>
+            <li><b>PyMC / bambi</b>：贝叶斯分析</li>
+            <li><b>MNE-Python</b>：EEG 分析</li>
+            <li><b>Taguette</b>：质性访谈编码（替代 NVivo）</li>
+          </ul>
+          <div class="note green"><b>精简原则</b>选装项不预装，项目需要时 <code>uv pip install</code> 即用，避免环境臃肿。</div>
+        </div>
       </div>
-      <div>
-        <h4>阶段 3 · SEM 迁移</h4>
-        <ul class="tight">
-          <li>semopy 重做一个 CFA、一个中介/路径模型</li>
-          <li>学会看 CFI / TLI / RMSEA / SRMR 并与 Mplus 输出对照</li>
-          <li>掌握决策规则（见下方决策树）</li>
-          <li><b>验收</b>：semopy 与 Mplus 参数估计、拟合指标吻合</li>
-        </ul>
+    </section>
+
+    <!-- ================= 学习路径 ================= -->
+    <section id="learning">
+      <h2>三、16 周学习路径</h2>
+      <p class="lead">六阶段递进，每阶段用真实研究任务验收。真正的学习曲线是"向 AI 精确描述研究需求"的能力，而非背语法。</p>
+
+      <figure>
+        <svg viewBox="0 0 1000 150" width="100%" role="img" aria-label="学习路径时间轴">
+          <line x1="40" y1="70" x2="960" y2="70" stroke="#dfe6ec" stroke-width="6" stroke-linecap="round"></line>
+          <!-- 阶段段 -->
+          <g>
+            <line x1="40" y1="70" x2="150" y2="70" stroke="#9db8c6" stroke-width="6" stroke-linecap="round"></line>
+            <line x1="150" y1="70" x2="265" y2="70" stroke="#6e9ab0" stroke-width="6" stroke-linecap="round"></line>
+            <line x1="265" y1="70" x2="440" y2="70" stroke="#2f6f8f" stroke-width="6" stroke-linecap="round"></line>
+            <line x1="440" y1="70" x2="615" y2="70" stroke="#3a7d5c" stroke-width="6" stroke-linecap="round"></line>
+            <line x1="615" y1="70" x2="730" y2="70" stroke="#a06a1c" stroke-width="6" stroke-linecap="round"></line>
+            <line x1="730" y1="70" x2="845" y2="70" stroke="#7a5a9e" stroke-width="6" stroke-linecap="round"></line>
+            <line x1="845" y1="70" x2="960" y2="70" stroke="#a64444" stroke-width="6" stroke-linecap="round"></line>
+          </g>
+          <g font-size="12" text-anchor="middle" fill="#1f2a36">
+            <circle cx="95" cy="70" r="7" fill="#9db8c6"></circle><text x="95" y="42" font-weight="700">环境熟练</text><text
+              x="95" y="98" fill="#4a5a68">第 1–2 周</text>
+            <circle cx="207" cy="70" r="7" fill="#6e9ab0"></circle><text x="207" y="42"
+              font-weight="700">数据清洗</text><text x="207" y="98" fill="#4a5a68">第 3–4 周</text>
+            <circle cx="352" cy="70" r="7" fill="#2f6f8f"></circle><text x="352" y="42"
+              font-weight="700">统计迁移</text><text x="352" y="98" fill="#4a5a68">第 5–7 周</text>
+            <circle cx="527" cy="70" r="7" fill="#3a7d5c"></circle><text x="527" y="42" font-weight="700">SEM
+              迁移</text><text x="527" y="98" fill="#4a5a68">第 8–10 周</text>
+            <circle cx="672" cy="70" r="7" fill="#a06a1c"></circle><text x="672" y="42"
+              font-weight="700">实验收数</text><text x="672" y="98" fill="#4a5a68">第 11–12 周</text>
+            <circle cx="787" cy="70" r="7" fill="#7a5a9e"></circle><text x="787" y="42" font-weight="700">Quarto
+              写作</text><text x="787" y="98" fill="#4a5a68">第 13–14 周</text>
+            <circle cx="902" cy="70" r="7" fill="#a64444"></circle><text x="902" y="42"
+              font-weight="700">大数据进阶</text><text x="902" y="98" fill="#4a5a68">第 15 周+</text>
+          </g>
+        </svg>
+        <figcaption>图 2 · 学习路径时间轴。第 7 周（统计迁移完成）与第 14 周（首篇 Quarto 论文）是两个关键里程碑。</figcaption>
+      </figure>
+
+      <details open="">
+        <summary>阶段 0–1 · 环境熟练（1–2 周）→ 数据清洗（3–4 周）</summary>
+        <div class="body">
+          <div class="grid2">
+            <div>
+              <h4>阶段 0 · 环境熟练</h4>
+              <ul class="tight">
+                <li>VS Code 打开文件夹 → 新建 <code>.ipynb</code> → 跑通第一行代码</li>
+                <li>学会 <code>uv pip install 包名</code> 管理环境</li>
+                <li>AI 练习：把任何报错直接贴给 AI，把它当随身导师</li>
+                <li><b>验收</b>：独立打开 notebook、读入 CSV、查看数据</li>
+              </ul>
+            </div>
+            <div>
+              <h4>阶段 1 · 数据清洗（最重要的基本功）</h4>
+              <ul class="tight">
+                <li>教材：<b>拿一份自己已有的 SPSS 数据</b>（.sav 用 pyreadstat 读入）</li>
+                <li>任务：筛有效被试 → 反向题重编码 → 算量表总分 → 缺失值统计 → 导出 Parquet</li>
+                <li>AI 练习："q3、q7、q12 是 1–5 点反向计分，帮我重编码并计算总分"——重点训练<b>读懂代码、核对结果</b></li>
+                <li><b>验收</b>：清洗结果与原 SPSS 处理完全一致</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary>阶段 2–3 · 统计迁移（5–7 周）→ SEM 迁移（8–10 周）</summary>
+        <div class="body">
+          <div class="grid2">
+            <div>
+              <h4>阶段 2 · 统计迁移</h4>
+              <ul class="tight">
+                <li>教材：<b>选一篇自己已发表的论文</b>，用代码重做全部统计</li>
+                <li>覆盖：信度、t 检验、ANOVA+事后检验、相关、回归、卡方</li>
+                <li>关键认知：pingouin 自带效应量/检验力/Bayes Factor，都要会解读（审稿加分项）</li>
+                <li>进阶：重复测量用 <code>mixed_anova</code>；中介用 <code>mediation_analysis</code></li>
+                <li><b>验收</b>：全部数字与原论文吻合，形成「常用分析模板 notebook」</li>
+              </ul>
+            </div>
+            <div>
+              <h4>阶段 3 · SEM 迁移</h4>
+              <ul class="tight">
+                <li>semopy 重做一个 CFA、一个中介/路径模型</li>
+                <li>学会看 CFI / TLI / RMSEA / SRMR 并与 Mplus 输出对照</li>
+                <li>掌握决策规则（见下方决策树）</li>
+                <li><b>验收</b>：semopy 与 Mplus 参数估计、拟合指标吻合</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary>阶段 4–6 · 实验收数 → Quarto 写作 → 进阶</summary>
+        <div class="body">
+          <div class="grid3">
+            <div>
+              <h4>阶段 4 · 实验收数（11–12 周）</h4>
+              <ul class="tight">
+                <li>PsychoPy Builder 复刻经典范式（如 Stroop）+ 嵌入问卷</li>
+                <li>上传 Pavlovia 跑通 设计→上线→收数→清洗 闭环</li>
+                <li>纯问卷研究可延后，REDCap 建库优先</li>
+              </ul>
+            </div>
+            <div>
+              <h4>阶段 5 · Quarto 写作（13–14 周）</h4>
+              <ul class="tight">
+                <li>把一篇成稿转成 Quarto：数字改为代码内联输出</li>
+                <li>配好 Better BibTeX 引文（<code>@citekey</code>），渲染 Word 投稿</li>
+                <li><b>体验目标</b>：改数据后重新渲染，全文数字自动刷新</li>
+              </ul>
+            </div>
+            <div>
+              <h4>阶段 6 · 进阶（15 周+）</h4>
+              <ul class="tight">
+                <li>项目需求触发：DuckDB 大数据、scikit-learn 预测模型</li>
+                <li>metafor 做 Meta 分析、ASReview 筛文献</li>
+                <li>贝叶斯（bambi）、EMA 密集纵向数据</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- ================= 工作流 ================= -->
+    <section id="workflow">
+      <h2>四、标准工作流（SOP）</h2>
+      <p class="lead">研究者与 AI 的分工泳道：判断与决策在人，执行与文书在 AI。</p>
+
+      <figure>
+        <svg viewBox="0 0 1000 430" width="100%" role="img" aria-label="研究者与 AI 分工泳道图">
+          <!-- 泳道背景 -->
+          <rect x="120" y="20" width="860" height="180" rx="10" fill="#fbf3e4"></rect>
+          <rect x="120" y="210" width="860" height="180" rx="10" fill="#e8f2f6"></rect>
+          <text x="60" y="110" text-anchor="middle" font-weight="700" font-size="15" fill="#a06a1c">研究者</text>
+          <text x="60" y="128" text-anchor="middle" font-size="11" fill="#a06a1c">判断与决策</text>
+          <text x="60" y="300" text-anchor="middle" font-weight="700" font-size="15" fill="#2f6f8f">AI Agent</text>
+          <text x="60" y="318" text-anchor="middle" font-size="11" fill="#2f6f8f">执行与文书</text>
+          <!-- 研究者任务 -->
+          <g font-size="12">
+            <rect x="150" y="50" width="180" height="52" rx="8" fill="#fff" stroke="#a06a1c"></rect>
+            <text x="240" y="72" text-anchor="middle" font-weight="600">提出研究问题</text>
+            <text x="240" y="90" text-anchor="middle" fill="#4a5a68" font-size="11">确定统计设计</text>
+            <rect x="370" y="50" width="180" height="52" rx="8" fill="#fff" stroke="#a06a1c"></rect>
+            <text x="460" y="72" text-anchor="middle" font-weight="600">选定测量工具</text>
+            <text x="460" y="90" text-anchor="middle" fill="#4a5a68" font-size="11">伦理审查 · 预注册</text>
+            <rect x="590" y="50" width="180" height="52" rx="8" fill="#fff" stroke="#a06a1c"></rect>
+            <text x="680" y="72" text-anchor="middle" font-weight="600">审读分析结果</text>
+            <text x="680" y="90" text-anchor="middle" fill="#4a5a68" font-size="11">核对前提假设</text>
+            <rect x="810" y="50" width="150" height="52" rx="8" fill="#fff" stroke="#a06a1c"></rect>
+            <text x="885" y="72" text-anchor="middle" font-weight="600">解释与结论</text>
+            <text x="885" y="90" text-anchor="middle" fill="#4a5a68" font-size="11">投稿决策</text>
+            <rect x="260" y="130" width="480" height="46" rx="8" fill="#fff" stroke="#a64444" stroke-dasharray="5,3">
+            </rect>
+            <text x="500" y="157" text-anchor="middle" fill="#a64444" font-weight="600">数据脱敏（人工）：删标识列 → 生成匿名 ID → 封存
+              raw</text>
+          </g>
+          <!-- AI 任务 -->
+          <g font-size="12">
+            <rect x="150" y="235" width="180" height="52" rx="8" fill="#fff" stroke="#2f6f8f"></rect>
+            <text x="240" y="257" text-anchor="middle" font-weight="600">文献检索与总结</text>
+            <text x="240" y="275" text-anchor="middle" fill="#4a5a68" font-size="11">Zotero MCP 读全文</text>
+            <rect x="370" y="235" width="180" height="52" rx="8" fill="#fff" stroke="#2f6f8f"></rect>
+            <text x="460" y="257" text-anchor="middle" font-weight="600">生成清洗代码</text>
+            <text x="460" y="275" text-anchor="middle" fill="#4a5a68" font-size="11">异常值检测</text>
+            <rect x="590" y="235" width="180" height="52" rx="8" fill="#fff" stroke="#2f6f8f"></rect>
+            <text x="680" y="257" text-anchor="middle" font-weight="600">执行统计分析</text>
+            <text x="680" y="275" text-anchor="middle" fill="#4a5a68" font-size="11">输出效应量 + CI</text>
+            <rect x="810" y="235" width="150" height="52" rx="8" fill="#fff" stroke="#2f6f8f"></rect>
+            <text x="885" y="257" text-anchor="middle" font-weight="600">润色与排版</text>
+            <text x="885" y="275" text-anchor="middle" fill="#4a5a68" font-size="11">Quarto 渲染</text>
+            <rect x="260" y="315" width="480" height="46" rx="8" fill="#fff" stroke="#2f6f8f"></rect>
+            <text x="500" y="342" text-anchor="middle" fill="#234a5e" font-weight="600">每个分析后汇报：方法 · 关键结果 · 假设是否满足 ·
+              注意事项</text>
+          </g>
+          <!-- 竖向连线 -->
+          <g stroke="#9db8c6" stroke-width="1.6" stroke-dasharray="4,3">
+            <line x1="240" y1="102" x2="240" y2="235"></line>
+            <line x1="460" y1="102" x2="460" y2="235"></line>
+            <line x1="680" y1="102" x2="680" y2="235"></line>
+            <line x1="885" y1="102" x2="885" y2="235"></line>
+            <line x1="500" y1="176" x2="500" y2="235"></line>
+          </g>
+          <text x="500" y="415" text-anchor="middle" font-size="12" fill="#4a5a68">指令流 ↓　↑ 结果流（人来审）</text>
+        </svg>
+        <figcaption>图 3 · 人机分工泳道图。红色虚线框是唯一不可委托给 AI 的数据处理环节。</figcaption>
+      </figure>
+
+      <h3>四条 SOP 约定</h3>
+      <div class="grid2">
+        <div class="card">
+          <h4>项目启动</h4>
+          <ul class="tight">
+            <li>复制标准目录模板 → <code>git init</code> → <code>uv venv</code> 锁环境</li>
+            <li>放入 AGENTS.md 并按项目微调 → OSF 建项目</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>数据铁律</h4>
+          <ul class="tight">
+            <li><code>data/raw/</code> 只读，清洗只走脚本到 <code>processed/</code></li>
+            <li>绝不在 Excel 手改数据；标识符对照表存工作空间之外</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>分析铁律</h4>
+          <ul class="tight">
+            <li>脚本头部注明：输入文件、分析目的、对应论文表/图</li>
+            <li>关键结果投稿前用 JASP 交叉验证一次</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>AI 协作铁律</h4>
+          <ul class="tight">
+            <li>统计决策人来定、代码 AI 写、结果人来审</li>
+            <li>论文中 AI 生成内容按期刊政策声明</li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </div></details>
 
-  <details><summary>阶段 4–6 · 实验收数 → Quarto 写作 → 进阶</summary><div class="body">
-    <div class="grid3">
-      <div>
-        <h4>阶段 4 · 实验收数（11–12 周）</h4>
-        <ul class="tight">
-          <li>PsychoPy Builder 复刻经典范式（如 Stroop）+ 嵌入问卷</li>
-          <li>上传 Pavlovia 跑通 设计→上线→收数→清洗 闭环</li>
-          <li>纯问卷研究可延后，REDCap 建库优先</li>
-        </ul>
+      <div class="note red"><b>日常节奏</b>每日：新文献随手入 Zotero、工作结束 Git 提交。每周：备份 data/、整理 notebook 保证可从头复跑。每项目节点：Quarto
+        渲染一次全文，检查数字一致性。</div>
+    </section>
+
+    <!-- ================= 速查 ================= -->
+    <section id="cheatsheet">
+      <h2>五、知识速查</h2>
+      <p class="lead">最常用的代码模板与决策规则，学习期可对照使用，熟练后交给 AI 复用。</p>
+
+      <h3>5.1 SEM 工具决策树</h3>
+      <figure>
+        <svg viewBox="0 0 1000 330" width="100%" role="img" aria-label="SEM 工具选择决策树">
+          <defs>
+            <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7"
+              orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#4a5a68"></path>
+            </marker>
+          </defs>
+          <g font-size="13">
+            <rect x="400" y="20" width="200" height="46" rx="23" fill="#234a5e"></rect>
+            <text x="500" y="48" text-anchor="middle" fill="#fff" font-weight="600">这是什么 SEM 任务？</text>
+
+            <rect x="60" y="120" width="200" height="52" rx="8" fill="#e8f2f6" stroke="#2f6f8f"></rect>
+            <text x="160" y="142" text-anchor="middle" font-weight="600" fill="#234a5e">CFA / 路径 / 中介</text>
+            <text x="160" y="160" text-anchor="middle" font-size="11" fill="#4a5a68">常规潜变量模型</text>
+
+            <rect x="300" y="120" width="200" height="52" rx="8" fill="#e8f2f6" stroke="#2f6f8f"></rect>
+            <text x="400" y="142" text-anchor="middle" font-weight="600" fill="#234a5e">多组比较 / 潜增长</text>
+            <text x="400" y="160" text-anchor="middle" font-size="11" fill="#4a5a68">测量等值 · 纵向轨迹</text>
+
+            <rect x="540" y="120" width="200" height="52" rx="8" fill="#faecec" stroke="#a64444"></rect>
+            <text x="640" y="142" text-anchor="middle" font-weight="600" fill="#a64444">潜类别 / 潜剖面</text>
+            <text x="640" y="160" text-anchor="middle" font-size="11" fill="#4a5a68">LCA / LPA · 症状亚型</text>
+
+            <rect x="780" y="120" width="180" height="52" rx="8" fill="#faecec" stroke="#a64444"></rect>
+            <text x="870" y="142" text-anchor="middle" font-weight="600" fill="#a64444">WLSMV / Monte Carlo</text>
+            <text x="870" y="160" text-anchor="middle" font-size="11" fill="#4a5a68">强稳健估计 · 功效模拟</text>
+
+            <rect x="60" y="240" width="200" height="56" rx="8" fill="#3a7d5c"></rect>
+            <text x="160" y="264" text-anchor="middle" fill="#fff" font-weight="700">semopy</text>
+            <text x="160" y="282" text-anchor="middle" fill="#dff0e6" font-size="11">Python 原生 · lavaan 语法</text>
+
+            <rect x="300" y="240" width="200" height="56" rx="8" fill="#3a7d5c"></rect>
+            <text x="400" y="264" text-anchor="middle" fill="#fff" font-weight="700">lavaan（R）</text>
+            <text x="400" y="282" text-anchor="middle" fill="#dff0e6" font-size="11">Rscript 子进程调用</text>
+
+            <rect x="540" y="240" width="200" height="56" rx="8" fill="#a64444"></rect>
+            <text x="640" y="264" text-anchor="middle" fill="#fff" font-weight="700">Mplus（保留）</text>
+            <text x="640" y="282" text-anchor="middle" fill="#f6dede" font-size="11">或 R 的 tidySEM/mclust</text>
+
+            <rect x="780" y="240" width="180" height="56" rx="8" fill="#a64444"></rect>
+            <text x="870" y="264" text-anchor="middle" fill="#fff" font-weight="700">Mplus（保留）</text>
+            <text x="870" y="282" text-anchor="middle" fill="#f6dede" font-size="11">不在 Python 强行实现</text>
+          </g>
+          <g stroke="#4a5a68" stroke-width="1.6" fill="none">
+            <path d="M 460 66 L 160 116" marker-end="url(#arr2)"></path>
+            <path d="M 485 66 L 400 116" marker-end="url(#arr2)"></path>
+            <path d="M 520 66 L 640 116" marker-end="url(#arr2)"></path>
+            <path d="M 545 66 L 870 116" marker-end="url(#arr2)"></path>
+            <line x1="160" y1="172" x2="160" y2="236" marker-end="url(#arr2)"></line>
+            <line x1="400" y1="172" x2="400" y2="236" marker-end="url(#arr2)"></line>
+            <line x1="640" y1="172" x2="640" y2="236" marker-end="url(#arr2)"></line>
+            <line x1="870" y1="172" x2="870" y2="236" marker-end="url(#arr2)"></line>
+          </g>
+        </svg>
+        <figcaption>图 4 · SEM 工具决策树。红色路径 = 开源缺口，回到 Mplus。</figcaption>
+      </figure>
+
+      <h3>5.2 常用统计方法速查</h3>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr>
+              <th>研究问题</th>
+              <th>方法</th>
+              <th>代码入口</th>
+            </tr>
+            <tr>
+              <td>量表信度</td>
+              <td>Cronbach's α / McDonald's ω</td>
+              <td><code>pg.cronbach_alpha(items)</code></td>
+            </tr>
+            <tr>
+              <td>两组比较</td>
+              <td>t 检验（不正态→Mann-Whitney）</td>
+              <td><code>pg.ttest(x, y)</code> / <code>pg.mwu(x, y)</code></td>
+            </tr>
+            <tr>
+              <td>多组比较</td>
+              <td>ANOVA + 事后检验</td>
+              <td><code>pg.anova()</code> + <code>pg.pairwise_ttests()</code></td>
+            </tr>
+            <tr>
+              <td>重复测量</td>
+              <td>重复测量 ANOVA / 混合模型</td>
+              <td><code>pg.rm_anova()</code> / <code>statsmodels mixedlm</code></td>
+            </tr>
+            <tr>
+              <td>变量间关系</td>
+              <td>相关（含偏相关）</td>
+              <td><code>pg.corr()</code> / <code>pg.partial_corr()</code></td>
+            </tr>
+            <tr>
+              <td>预测关系</td>
+              <td>线性 / Logistic 回归</td>
+              <td><code>statsmodels: smf.ols() / smf.logit()</code></td>
+            </tr>
+            <tr>
+              <td>中介效应</td>
+              <td>Bootstrap 中介分析</td>
+              <td><code>pg.mediation_analysis()</code></td>
+            </tr>
+            <tr>
+              <td>测量结构验证</td>
+              <td>EFA → CFA</td>
+              <td><code>factor_analyzer</code> → <code>semopy</code></td>
+            </tr>
+            <tr>
+              <td>缺失值</td>
+              <td>多重插补</td>
+              <td>R <code>mice</code>（Rscript 调用）</td>
+            </tr>
+            <tr>
+              <td>样本量</td>
+              <td>功效分析</td>
+              <td><code>pg.power_ttest()</code> / G*Power</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div>
-        <h4>阶段 5 · Quarto 写作（13–14 周）</h4>
-        <ul class="tight">
-          <li>把一篇成稿转成 Quarto：数字改为代码内联输出</li>
-          <li>配好 Better BibTeX 引文（<code>@citekey</code>），渲染 Word 投稿</li>
-          <li><b>体验目标</b>：改数据后重新渲染，全文数字自动刷新</li>
-        </ul>
-      </div>
-      <div>
-        <h4>阶段 6 · 进阶（15 周+）</h4>
-        <ul class="tight">
-          <li>项目需求触发：DuckDB 大数据、scikit-learn 预测模型</li>
-          <li>metafor 做 Meta 分析、ASReview 筛文献</li>
-          <li>贝叶斯（bambi）、EMA 密集纵向数据</li>
-        </ul>
-      </div>
-    </div>
-  </div></details>
-</section>
 
-<!-- ================= 工作流 ================= -->
-<section id="workflow">
-  <h2>四、标准工作流（SOP）</h2>
-  <p class="lead">研究者与 AI 的分工泳道：判断与决策在人，执行与文书在 AI。</p>
+      <h3>5.3 核心代码模板</h3>
 
-  <figure>
-  <svg viewBox="0 0 1000 430" width="100%" role="img" aria-label="研究者与 AI 分工泳道图">
-    <!-- 泳道背景 -->
-    <rect x="120" y="20" width="860" height="180" rx="10" fill="#fbf3e4"></rect>
-    <rect x="120" y="210" width="860" height="180" rx="10" fill="#e8f2f6"></rect>
-    <text x="60" y="110" text-anchor="middle" font-weight="700" font-size="15" fill="#a06a1c">研究者</text>
-    <text x="60" y="128" text-anchor="middle" font-size="11" fill="#a06a1c">判断与决策</text>
-    <text x="60" y="300" text-anchor="middle" font-weight="700" font-size="15" fill="#2f6f8f">AI Agent</text>
-    <text x="60" y="318" text-anchor="middle" font-size="11" fill="#2f6f8f">执行与文书</text>
-    <!-- 研究者任务 -->
-    <g font-size="12">
-      <rect x="150" y="50" width="180" height="52" rx="8" fill="#fff" stroke="#a06a1c"></rect>
-      <text x="240" y="72" text-anchor="middle" font-weight="600">提出研究问题</text>
-      <text x="240" y="90" text-anchor="middle" fill="#4a5a68" font-size="11">确定统计设计</text>
-      <rect x="370" y="50" width="180" height="52" rx="8" fill="#fff" stroke="#a06a1c"></rect>
-      <text x="460" y="72" text-anchor="middle" font-weight="600">选定测量工具</text>
-      <text x="460" y="90" text-anchor="middle" fill="#4a5a68" font-size="11">伦理审查 · 预注册</text>
-      <rect x="590" y="50" width="180" height="52" rx="8" fill="#fff" stroke="#a06a1c"></rect>
-      <text x="680" y="72" text-anchor="middle" font-weight="600">审读分析结果</text>
-      <text x="680" y="90" text-anchor="middle" fill="#4a5a68" font-size="11">核对前提假设</text>
-      <rect x="810" y="50" width="150" height="52" rx="8" fill="#fff" stroke="#a06a1c"></rect>
-      <text x="885" y="72" text-anchor="middle" font-weight="600">解释与结论</text>
-      <text x="885" y="90" text-anchor="middle" fill="#4a5a68" font-size="11">投稿决策</text>
-      <rect x="260" y="130" width="480" height="46" rx="8" fill="#fff" stroke="#a64444" stroke-dasharray="5,3"></rect>
-      <text x="500" y="157" text-anchor="middle" fill="#a64444" font-weight="600">数据脱敏（人工）：删标识列 → 生成匿名 ID → 封存 raw</text>
-    </g>
-    <!-- AI 任务 -->
-    <g font-size="12">
-      <rect x="150" y="235" width="180" height="52" rx="8" fill="#fff" stroke="#2f6f8f"></rect>
-      <text x="240" y="257" text-anchor="middle" font-weight="600">文献检索与总结</text>
-      <text x="240" y="275" text-anchor="middle" fill="#4a5a68" font-size="11">Zotero MCP 读全文</text>
-      <rect x="370" y="235" width="180" height="52" rx="8" fill="#fff" stroke="#2f6f8f"></rect>
-      <text x="460" y="257" text-anchor="middle" font-weight="600">生成清洗代码</text>
-      <text x="460" y="275" text-anchor="middle" fill="#4a5a68" font-size="11">异常值检测</text>
-      <rect x="590" y="235" width="180" height="52" rx="8" fill="#fff" stroke="#2f6f8f"></rect>
-      <text x="680" y="257" text-anchor="middle" font-weight="600">执行统计分析</text>
-      <text x="680" y="275" text-anchor="middle" fill="#4a5a68" font-size="11">输出效应量 + CI</text>
-      <rect x="810" y="235" width="150" height="52" rx="8" fill="#fff" stroke="#2f6f8f"></rect>
-      <text x="885" y="257" text-anchor="middle" font-weight="600">润色与排版</text>
-      <text x="885" y="275" text-anchor="middle" fill="#4a5a68" font-size="11">Quarto 渲染</text>
-      <rect x="260" y="315" width="480" height="46" rx="8" fill="#fff" stroke="#2f6f8f"></rect>
-      <text x="500" y="342" text-anchor="middle" fill="#234a5e" font-weight="600">每个分析后汇报：方法 · 关键结果 · 假设是否满足 · 注意事项</text>
-    </g>
-    <!-- 竖向连线 -->
-    <g stroke="#9db8c6" stroke-width="1.6" stroke-dasharray="4,3">
-      <line x1="240" y1="102" x2="240" y2="235"></line><line x1="460" y1="102" x2="460" y2="235"></line>
-      <line x1="680" y1="102" x2="680" y2="235"></line><line x1="885" y1="102" x2="885" y2="235"></line>
-      <line x1="500" y1="176" x2="500" y2="235"></line>
-    </g>
-    <text x="500" y="415" text-anchor="middle" font-size="12" fill="#4a5a68">指令流 ↓　↑ 结果流（人来审）</text>
-  </svg>
-  <figcaption>图 3 · 人机分工泳道图。红色虚线框是唯一不可委托给 AI 的数据处理环节。</figcaption>
-  </figure>
-
-  <h3>四条 SOP 约定</h3>
-  <div class="grid2">
-    <div class="card"><h4>项目启动</h4>
-      <ul class="tight">
-        <li>复制标准目录模板 → <code>git init</code> → <code>uv venv</code> 锁环境</li>
-        <li>放入 AGENTS.md 并按项目微调 → OSF 建项目</li>
-      </ul>
-    </div>
-    <div class="card"><h4>数据铁律</h4>
-      <ul class="tight">
-        <li><code>data/raw/</code> 只读，清洗只走脚本到 <code>processed/</code></li>
-        <li>绝不在 Excel 手改数据；标识符对照表存工作空间之外</li>
-      </ul>
-    </div>
-    <div class="card"><h4>分析铁律</h4>
-      <ul class="tight">
-        <li>脚本头部注明：输入文件、分析目的、对应论文表/图</li>
-        <li>关键结果投稿前用 JASP 交叉验证一次</li>
-      </ul>
-    </div>
-    <div class="card"><h4>AI 协作铁律</h4>
-      <ul class="tight">
-        <li>统计决策人来定、代码 AI 写、结果人来审</li>
-        <li>论文中 AI 生成内容按期刊政策声明</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="note red"><b>日常节奏</b>每日：新文献随手入 Zotero、工作结束 Git 提交。每周：备份 data/、整理 notebook 保证可从头复跑。每项目节点：Quarto 渲染一次全文，检查数字一致性。</div>
-</section>
-
-<!-- ================= 速查 ================= -->
-<section id="cheatsheet">
-  <h2>五、知识速查</h2>
-  <p class="lead">最常用的代码模板与决策规则，学习期可对照使用，熟练后交给 AI 复用。</p>
-
-  <h3>5.1 SEM 工具决策树</h3>
-  <figure>
-  <svg viewBox="0 0 1000 330" width="100%" role="img" aria-label="SEM 工具选择决策树">
-    <defs>
-      <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-        <path d="M0,0 L10,5 L0,10 z" fill="#4a5a68"></path>
-      </marker>
-    </defs>
-    <g font-size="13">
-      <rect x="400" y="20" width="200" height="46" rx="23" fill="#234a5e"></rect>
-      <text x="500" y="48" text-anchor="middle" fill="#fff" font-weight="600">这是什么 SEM 任务？</text>
-
-      <rect x="60" y="120" width="200" height="52" rx="8" fill="#e8f2f6" stroke="#2f6f8f"></rect>
-      <text x="160" y="142" text-anchor="middle" font-weight="600" fill="#234a5e">CFA / 路径 / 中介</text>
-      <text x="160" y="160" text-anchor="middle" font-size="11" fill="#4a5a68">常规潜变量模型</text>
-
-      <rect x="300" y="120" width="200" height="52" rx="8" fill="#e8f2f6" stroke="#2f6f8f"></rect>
-      <text x="400" y="142" text-anchor="middle" font-weight="600" fill="#234a5e">多组比较 / 潜增长</text>
-      <text x="400" y="160" text-anchor="middle" font-size="11" fill="#4a5a68">测量等值 · 纵向轨迹</text>
-
-      <rect x="540" y="120" width="200" height="52" rx="8" fill="#faecec" stroke="#a64444"></rect>
-      <text x="640" y="142" text-anchor="middle" font-weight="600" fill="#a64444">潜类别 / 潜剖面</text>
-      <text x="640" y="160" text-anchor="middle" font-size="11" fill="#4a5a68">LCA / LPA · 症状亚型</text>
-
-      <rect x="780" y="120" width="180" height="52" rx="8" fill="#faecec" stroke="#a64444"></rect>
-      <text x="870" y="142" text-anchor="middle" font-weight="600" fill="#a64444">WLSMV / Monte Carlo</text>
-      <text x="870" y="160" text-anchor="middle" font-size="11" fill="#4a5a68">强稳健估计 · 功效模拟</text>
-
-      <rect x="60" y="240" width="200" height="56" rx="8" fill="#3a7d5c"></rect>
-      <text x="160" y="264" text-anchor="middle" fill="#fff" font-weight="700">semopy</text>
-      <text x="160" y="282" text-anchor="middle" fill="#dff0e6" font-size="11">Python 原生 · lavaan 语法</text>
-
-      <rect x="300" y="240" width="200" height="56" rx="8" fill="#3a7d5c"></rect>
-      <text x="400" y="264" text-anchor="middle" fill="#fff" font-weight="700">lavaan（R）</text>
-      <text x="400" y="282" text-anchor="middle" fill="#dff0e6" font-size="11">Rscript 子进程调用</text>
-
-      <rect x="540" y="240" width="200" height="56" rx="8" fill="#a64444"></rect>
-      <text x="640" y="264" text-anchor="middle" fill="#fff" font-weight="700">Mplus（保留）</text>
-      <text x="640" y="282" text-anchor="middle" fill="#f6dede" font-size="11">或 R 的 tidySEM/mclust</text>
-
-      <rect x="780" y="240" width="180" height="56" rx="8" fill="#a64444"></rect>
-      <text x="870" y="264" text-anchor="middle" fill="#fff" font-weight="700">Mplus（保留）</text>
-      <text x="870" y="282" text-anchor="middle" fill="#f6dede" font-size="11">不在 Python 强行实现</text>
-    </g>
-    <g stroke="#4a5a68" stroke-width="1.6" fill="none">
-      <path d="M 460 66 L 160 116" marker-end="url(#arr2)"></path>
-      <path d="M 485 66 L 400 116" marker-end="url(#arr2)"></path>
-      <path d="M 520 66 L 640 116" marker-end="url(#arr2)"></path>
-      <path d="M 545 66 L 870 116" marker-end="url(#arr2)"></path>
-      <line x1="160" y1="172" x2="160" y2="236" marker-end="url(#arr2)"></line>
-      <line x1="400" y1="172" x2="400" y2="236" marker-end="url(#arr2)"></line>
-      <line x1="640" y1="172" x2="640" y2="236" marker-end="url(#arr2)"></line>
-      <line x1="870" y1="172" x2="870" y2="236" marker-end="url(#arr2)"></line>
-    </g>
-  </svg>
-  <figcaption>图 4 · SEM 工具决策树。红色路径 = 开源缺口，回到 Mplus。</figcaption>
-  </figure>
-
-  <h3>5.2 常用统计方法速查</h3>
-  <table>
-    <tbody><tr><th>研究问题</th><th>方法</th><th>代码入口</th></tr>
-    <tr><td>量表信度</td><td>Cronbach's α / McDonald's ω</td><td><code>pg.cronbach_alpha(items)</code></td></tr>
-    <tr><td>两组比较</td><td>t 检验（不正态→Mann-Whitney）</td><td><code>pg.ttest(x, y)</code> / <code>pg.mwu(x, y)</code></td></tr>
-    <tr><td>多组比较</td><td>ANOVA + 事后检验</td><td><code>pg.anova()</code> + <code>pg.pairwise_ttests()</code></td></tr>
-    <tr><td>重复测量</td><td>重复测量 ANOVA / 混合模型</td><td><code>pg.rm_anova()</code> / <code>statsmodels mixedlm</code></td></tr>
-    <tr><td>变量间关系</td><td>相关（含偏相关）</td><td><code>pg.corr()</code> / <code>pg.partial_corr()</code></td></tr>
-    <tr><td>预测关系</td><td>线性 / Logistic 回归</td><td><code>statsmodels: smf.ols() / smf.logit()</code></td></tr>
-    <tr><td>中介效应</td><td>Bootstrap 中介分析</td><td><code>pg.mediation_analysis()</code></td></tr>
-    <tr><td>测量结构验证</td><td>EFA → CFA</td><td><code>factor_analyzer</code> → <code>semopy</code></td></tr>
-    <tr><td>缺失值</td><td>多重插补</td><td>R <code>mice</code>（Rscript 调用）</td></tr>
-    <tr><td>样本量</td><td>功效分析</td><td><code>pg.power_ttest()</code> / G*Power</td></tr>
-  </tbody></table>
-
-  <h3>5.3 核心代码模板</h3>
-
-  <details><summary>模板 A · 问卷数据清洗全流程（pandas）</summary><div class="body">
-<pre><span class="cm"># 输入: data/processed/survey_deidentified.csv（已脱敏）</span>
+      <details>
+        <summary>模板 A · 问卷数据清洗全流程（pandas）</summary>
+        <div class="body">
+          <pre><span class="cm"># 输入: data/processed/survey_deidentified.csv（已脱敏）</span>
 <span class="kw">import</span> pandas <span class="kw">as</span> pd, pyreadstat
 
 df, meta = pyreadstat.read_sav(<span class="st">"data/raw/old.sav"</span>)   <span class="cm"># SPSS 历史数据迁移</span>
@@ -579,10 +1105,13 @@ df[<span class="st">"anxiety"</span>]    = df[[<span class="st">f"q{i}"</span> <
 <span class="kw">print</span>(df[[<span class="st">"depression"</span>, <span class="st">"anxiety"</span>]].describe())
 
 df.to_parquet(<span class="st">"data/processed/clean.parquet"</span>)          <span class="cm"># 只写 processed</span></pre>
-  </div></details>
+        </div>
+      </details>
 
-  <details><summary>模板 B · 论文级统计报告（pingouin）</summary><div class="body">
-<pre><span class="kw">import</span> pingouin <span class="kw">as</span> pg
+      <details>
+        <summary>模板 B · 论文级统计报告（pingouin）</summary>
+        <div class="body">
+          <pre><span class="kw">import</span> pingouin <span class="kw">as</span> pg
 
 <span class="cm"># 信度</span>
 alpha = pg.cronbach_alpha(data=df[[<span class="st">f"q{i}"</span> <span class="kw">for</span> i <span class="kw">in</span> range(1, 10)]])
@@ -599,10 +1128,13 @@ post = pg.pairwise_ttests(data=df, dv=<span class="st">"depression"</span>, betw
 <span class="cm"># 中介分析（Bootstrap）</span>
 med = pg.mediation_analysis(data=df, x=<span class="st">"stress"</span>, m=<span class="st">"rumination"</span>,
                             y=<span class="st">"depression"</span>, n_boot=5000)</pre>
-  </div></details>
+        </div>
+      </details>
 
-  <details><summary>模板 C · SEM（semopy，替代 Mplus 常规模型）</summary><div class="body">
-<pre><span class="kw">import</span> semopy
+      <details>
+        <summary>模板 C · SEM（semopy，替代 Mplus 常规模型）</summary>
+        <div class="body">
+          <pre><span class="kw">import</span> semopy
 
 model = semopy.Model(<span class="st">"""
 # 测量模型
@@ -617,19 +1149,23 @@ res = model.inspect()
 stats = semopy.calc_stats(model)      <span class="cm"># CFI / TLI / RMSEA / SRMR 等</span>
 <span class="kw">print</span>(res); <span class="kw">print</span>(stats.T)
 semopy.semplot(model, <span class="st">"output/sem_path.png"</span>)   <span class="cm"># 路径图</span></pre>
-  </div></details>
+        </div>
+      </details>
 
-  <details><summary>模板 D · Python 调 R（Windows 推荐：Rscript 子进程）</summary><div class="body">
-<pre><span class="cm"># analysis_lpa.R —— 用 mclust 做潜剖面分析</span>
+      <details>
+        <summary>模板 D · Python 调 R（Windows 推荐：Rscript 子进程）</summary>
+        <div class="body">
+          <pre><span class="cm"># analysis_lpa.R —— 用 mclust 做潜剖面分析</span>
 <span class="cm"># df &lt;- read.csv("data/processed/clean.csv"); library(mclust); ...</span>
 
 <span class="kw">import</span> subprocess
 subprocess.run([<span class="st">"Rscript"</span>, <span class="st">"analysis/analysis_lpa.R"</span>], check=<span class="kw">True</span>)
 result = pd.read_csv(<span class="st">"output/lpa_result.csv"</span>)   <span class="cm"># 经 CSV 交换数据</span></pre>
-  </div></details>
+        </div>
+      </details>
 
-  <h3>5.4 环境与新项目命令</h3>
-<pre><span class="cm"># ---- 新项目 5 分钟启动 ----</span>
+      <h3>5.4 环境与新项目命令</h3>
+      <pre><span class="cm"># ---- 新项目 5 分钟启动 ----</span>
 <span class="kw">cd</span> research &amp;&amp; <span class="kw">mkdir</span> study-xxx &amp;&amp; <span class="kw">cd</span> study-xxx
 git init
 <span class="kw">cp</span> ../_shared/templates/AGENTS.md ../_shared/templates/.gitignore .
@@ -642,51 +1178,65 @@ uv pip install 包名          <span class="cm"># 项目环境加包（先经研
 quarto render paper.qmd --to docx     <span class="cm"># 论文渲染为 Word</span>
 Rscript install_R_packages.R          <span class="cm"># R 包（全局，只装一次）</span></pre>
 
-  <h3>5.5 向 AI 下指令的三类范式</h3>
-  <div class="grid3">
-    <div class="card"><h4>数据任务</h4><p style="font-size:.92rem">给出变量含义、计分规则、筛选标准 → 要求输出 <b>代码 + 结果 + 解释</b> 三件套。</p></div>
-    <div class="card"><h4>统计任务</h4><p style="font-size:.92rem">说明研究设计（几组/是否配对/变量类型）→ 要求 <b>推荐方法 → 给代码 → 解读输出</b> 三步走。</p></div>
-    <div class="card"><h4>审读任务</h4><p style="font-size:.92rem">把 AI 的输出贴回去问：<b>"这个分析的前提假设是什么？我的数据满足吗？"</b></p></div>
-  </div>
-</section>
+      <h3>5.5 向 AI 下指令的三类范式</h3>
+      <div class="grid3">
+        <div class="card">
+          <h4>数据任务</h4>
+          <p style="font-size:.92rem">给出变量含义、计分规则、筛选标准 → 要求输出 <b>代码 + 结果 + 解释</b> 三件套。</p>
+        </div>
+        <div class="card">
+          <h4>统计任务</h4>
+          <p style="font-size:.92rem">说明研究设计（几组/是否配对/变量类型）→ 要求 <b>推荐方法 → 给代码 → 解读输出</b> 三步走。</p>
+        </div>
+        <div class="card">
+          <h4>审读任务</h4>
+          <p style="font-size:.92rem">把 AI 的输出贴回去问：<b>"这个分析的前提假设是什么？我的数据满足吗？"</b></p>
+        </div>
+      </div>
+    </section>
 
-<!-- ================= 工作空间 ================= -->
-<section id="workspace">
-  <h2>六、工作空间与配置边界</h2>
+    <!-- ================= 工作空间 ================= -->
+    <section id="workspace">
+      <h2>六、工作空间与配置边界</h2>
 
-  <div class="grid2">
-    <div class="card">
-      <h4>全局（装一次，永久生效）</h4>
-      <ul class="tight">
-        <li>uv · R+Rtools · VS Code · Quarto · Git · PsychoPy · JASP · G*Power</li>
-        <li>Zotero + Better BibTeX；zotero-mcp / ASReview（<code>uv tool install</code>）</li>
-        <li><b>R 全部包</b>（全局库，项目共享）</li>
-        <li>MCP 配置（filesystem→research 根目录 · zotero · duckdb 共享库）</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h4>每个新项目（约 5 分钟）</h4>
-      <ul class="tight">
-        <li>目录结构 + <code>git init</code></li>
-        <li><code>uv venv</code> 独立环境 + 安装 Python 包</li>
-        <li>复制 AGENTS.md（自包含，按项目微调）+ .gitignore</li>
-        <li>数据脱敏后入 <code>processed/</code>，raw 封存</li>
-      </ul>
-    </div>
-  </div>
+      <div class="grid2">
+        <div class="card">
+          <h4>全局（装一次，永久生效）</h4>
+          <ul class="tight">
+            <li>uv · R+Rtools · VS Code · Quarto · Git · PsychoPy · JASP · G*Power</li>
+            <li>Zotero + Better BibTeX；zotero-mcp / ASReview（<code>uv tool install</code>）</li>
+            <li><b>R 全部包</b>（全局库，项目共享）</li>
+            <li>MCP 配置（filesystem→research 根目录 · zotero · duckdb 共享库）</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>每个新项目（约 5 分钟）</h4>
+          <ul class="tight">
+            <li>目录结构 + <code>git init</code></li>
+            <li><code>uv venv</code> 独立环境 + 安装 Python 包</li>
+            <li>复制 AGENTS.md（自包含，按项目微调）+ .gitignore</li>
+            <li>数据脱敏后入 <code>processed/</code>，raw 封存</li>
+          </ul>
+        </div>
+      </div>
 
-  <div class="note"><b>授权给根目录，工作在子项目</b>MCP filesystem 授权 research 根目录（一次覆盖所有项目）；但日常启动 Agent / 打开 VS Code 都在 <b>子项目</b> 层——AGENTS.md 才会加载、.venv 才被识别、Git 边界才清晰、误触他项目数据的概率最低。只有跨项目管理性任务（更新共享模板、备份）才回根目录。</div>
+      <div class="note"><b>授权给根目录，工作在子项目</b>MCP filesystem 授权 research 根目录（一次覆盖所有项目）；但日常启动 Agent / 打开 VS Code 都在
+        <b>子项目</b> 层——AGENTS.md 才会加载、.venv 才被识别、Git 边界才清晰、误触他项目数据的概率最低。只有跨项目管理性任务（更新共享模板、备份）才回根目录。
+      </div>
 
-  <div class="note red"><b>数据安全的最后一道防线</b>AGENTS.md 是"约定"而非"技术强制"。含患者标识符的数据最可靠的隔离方式：<b>根本不放进 Agent 可见目录</b>——标识符对照表存 research 根目录之外，processed/ 只放脱敏副本。</div>
-</section>
+      <div class="note red"><b>数据安全的最后一道防线</b>AGENTS.md 是"约定"而非"技术强制"。含患者标识符的数据最可靠的隔离方式：<b>根本不放进 Agent 可见目录</b>——标识符对照表存
+        research 根目录之外，processed/ 只放脱敏副本。</div>
+    </section>
 
-</main>
+  </main>
 
-<footer>
-  临床心理科研工作台 · 开源为主体 / Python 为核心 / AI Agent 全流程协作<br>
-  配套文档：软件组合推荐方案 · 最终配置方案 · 学习路径与工作流 · Agent 工作空间设置指南
-</footer>
+  <footer>
+    临床心理科研工作台 · 开源为主体 / Python 为核心 / AI Agent 全流程协作<br>
+    配套文档：软件组合推荐方案 · 最终配置方案 · 学习路径与工作流 · Agent 工作空间设置指南
+  </footer>
 
 
 
-</body></html>
+</body>
+
+</html>
