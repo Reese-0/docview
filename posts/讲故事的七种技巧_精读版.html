@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#faf8f5">
+  <title>讲故事的七种技巧 · 手机阅读版</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --card: #ffffff;
+      --ink: #26241f;
+      --soft: #4a463e;
+      --muted: #8a8378;
+      --accent: #b3522c;
+      --accent-soft: #fdf3ee;
+      --line: #e8e2d8;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+        "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      font-size: 17px;
+      line-height: 1.85;
+      letter-spacing: .01em;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 20px calc(64px + env(safe-area-inset-bottom));
+    }
+
+    /* ---------- 页头 ---------- */
+    header {
+      padding: 44px 0 28px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 30px;
+    }
+
+    .kicker {
+      font-size: 12.5px;
+      letter-spacing: .18em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 27px;
+      line-height: 1.42;
+      margin: 0 0 16px;
+      font-weight: 700;
+      letter-spacing: -.01em;
+    }
+
+    .meta {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .meta span {
+      display: inline-block;
+      background: #f0ece5;
+      color: #6d665c;
+      border-radius: 999px;
+      padding: 3px 11px;
+      margin: 0 6px 7px 0;
+      font-size: 12.5px;
+    }
+
+    /* ---------- 目录 ---------- */
+    .toc {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 12px;
+      margin-bottom: 40px;
+    }
+
+    .toc h2 {
+      font-size: 13px;
+      letter-spacing: .14em;
+      color: var(--muted);
+      font-weight: 600;
+      margin: 0 0 12px;
+    }
+
+    .toc a {
+      display: flex;
+      align-items: baseline;
+      gap: 11px;
+      padding: 9px 0;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 15.5px;
+      border-bottom: 1px dashed #efeae1;
+      line-height: 1.5;
+    }
+
+    .toc a:last-child {
+      border-bottom: none;
+    }
+
+    .toc a:active {
+      color: var(--accent);
+    }
+
+    .toc .n {
+      flex: 0 0 auto;
+      width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translateY(2px);
+    }
+
+    /* ---------- 章节 ---------- */
+    section.tech {
+      margin-bottom: 46px;
+      scroll-margin-top: 18px;
+    }
+
+    .head {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-bottom: 6px;
+    }
+
+    .num {
+      flex: 0 0 auto;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(179, 82, 44, .24);
+    }
+
+    h2 {
+      font-size: 21px;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: -.01em;
+      line-height: 1.4;
+    }
+
+    .time {
+      display: inline-block;
+      font-size: 12px;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      color: var(--muted);
+      background: #f2eee8;
+      border-radius: 6px;
+      padding: 2px 8px;
+      margin: 0 0 18px 47px;
+      letter-spacing: .02em;
+    }
+
+    p {
+      margin: 0 0 16px;
+    }
+
+    /* 要点卡片 */
+    .key {
+      background: var(--accent-soft);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 15px 17px;
+      margin: 0 0 18px;
+      color: #4a3a31;
+      font-size: 16.5px;
+    }
+
+    .key p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* 例证 */
+    .eg {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 15px 17px;
+      margin: 0 0 18px;
+      font-size: 16px;
+      color: var(--soft);
+    }
+
+    .eg p:last-child {
+      margin-bottom: 0;
+    }
+
+    .eg .tag {
+      display: inline-block;
+      font-size: 11.5px;
+      letter-spacing: .1em;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    /* 冲突阶梯 */
+    .chain {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin: 0 0 20px;
+    }
+
+    .chain .step {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 12px 15px;
+      font-size: 15.5px;
+    }
+
+    .chain .step b {
+      flex: 0 0 auto;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      background: #c9a48f;
+      border-radius: 6px;
+      padding: 2px 7px;
+      transform: translateY(4px);
+      white-space: nowrap;
+    }
+
+    .chain .step:last-child b {
+      background: var(--accent);
+    }
+
+    em {
+      font-style: normal;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    strong {
+      font-weight: 700;
+    }
+
+    /* ---------- 附录 ---------- */
+    details {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 0 18px;
+      margin-bottom: 34px;
+      overflow: hidden;
+    }
+
+    summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 16px 0;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .04em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "＋";
+      font-size: 15px;
+      color: var(--accent);
+      font-weight: 400;
+    }
+
+    details[open] summary::after {
+      content: "－";
+    }
+
+    details[open] summary {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .fixlist {
+      padding: 8px 0 14px;
+    }
+
+    .fix {
+      font-size: 14px;
+      color: var(--soft);
+      padding: 10px 0;
+      border-bottom: 1px dashed #efeae1;
+      line-height: 1.7;
+    }
+
+    .fix:last-child {
+      border-bottom: none;
+    }
+
+    .fix .t {
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 12px;
+      color: var(--muted);
+      margin-right: 8px;
+    }
+
+    .fix .old {
+      color: #b0a89c;
+      text-decoration: line-through;
+    }
+
+    .fix .new {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .fix .why {
+      display: block;
+      color: var(--muted);
+      font-size: 12.5px;
+      margin-top: 3px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--muted);
+      padding-top: 26px;
+      border-top: 1px solid var(--line);
+      line-height: 1.9;
+    }
+
+    @media (max-width:360px) {
+      body {
+        font-size: 16px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 19px;
+      }
+
+      .wrap {
+        padding: 0 16px 56px;
+      }
+
+      .time {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header>
+      <div class="kicker">Storytelling · 7 Techniques</div>
+      <h1>讲故事的七种技巧<br><span style="font-size:16px;font-weight:400;color:#8a8378;">漫画、电影、小说通用</span></h1>
+      <div class="meta">
+        <span>视频 9分33秒</span>
+        <span>音频转写</span>
+        <span>多配置交叉校对</span>
+        <span>校订 7 处</span>
+      </div>
+    </header>
+
+    <nav class="toc">
+      <h2>目录</h2>
+      <a href="#t1"><span class="n">1</span><span>困境</span></a>
+      <a href="#t2"><span class="n">2</span><span>熔炉</span></a>
+      <a href="#t3"><span class="n">3</span><span>冲突类型：人与自然 / 人与人 / 人与自我</span></a>
+      <a href="#t4"><span class="n">4</span><span>扁平人物与圆形人物：双重性</span></a>
+      <a href="#t5"><span class="n">5</span><span>情感重复：像谱写交响曲</span></a>
+      <a href="#t6"><span class="n">6</span><span>悬念：保持谜团开放</span></a>
+      <a href="#t7"><span class="n">7</span><span>三次法则</span></a>
+    </nav>
+
+    <!-- 1 -->
+    <section class="tech" id="t1">
+      <div class="head">
+        <div class="num">1</div>
+        <h2>困境</h2>
+      </div>
+      <div class="time">00:03 – 01:46</div>
+
+      <div class="key">
+        <p>困境是每个故事的核心。人物面对两种都不理想的方案，其中存在相互冲突的价值取向，于是产生无法解决的问题——<strong>解决它会引发另一个问题</strong>。</p>
+      </div>
+
+      <p>关键在于：<em>第一次尝试必然失败</em>。表面问题背后还藏着更深的困境，人物被迫投入越来越多精力。最终表面问题被解决，而困境只能靠观念的转变来化解。</p>
+
+      <div class="eg">
+        <span class="tag">例证</span>
+        <p>角色以为升职就能获得认可、生活会更好，但真正缺的是来自内心的认可；除非认可源于内心，否则对认可的追求永远不会结束。结局时他可能发现最初追求的东西已不重要，这次旅程重建了他的价值观。</p>
+      </div>
+
+      <p>通过探索困境，你会开始了解主题的本质，并将故事提炼为最清晰的含义。如果哈利·波特只是摧毁伏地魔，问题就结束了，那么「善恶共生」的主题也就不存在了。</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="tech" id="t2">
+      <div class="head">
+        <div class="num">2</div>
+        <h2>熔炉</h2>
+      </div>
+      <div class="time">01:50 – 03:11</div>
+
+      <p>熔炉（crucible）本是盛放沸腾金属的容器；在故事里，它是<strong>把人物聚在一起、加热冲突的容器</strong>。</p>
+
+      <div class="eg">
+        <span class="tag">例证</span>
+        <p>一对结婚多年、已不再相爱的夫妻，离婚太容易，因此没有冲突。让他们不得不在一起——比如有一个女儿，双方都不愿冒失去孩子的风险——就能制造无法忍受的氛围。</p>
+      </div>
+
+      <p>熔炉可以是环境（旅行途中困在小屋）、家庭关系、三角恋、文化或国家。几个性格不同的角色，因为各种原因被困在房子、轮船或小岛上，是加强冲突最简单有效的方法之一。</p>
+
+      <div class="key">
+        <p>要点：让角色尽可能聚在一起、无法逃离这个容器，让他们的冲突相互摩擦。</p>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="tech" id="t3">
+      <div class="head">
+        <div class="num">3</div>
+        <h2>冲突类型</h2>
+      </div>
+      <div class="time">03:11 – 05:03</div>
+
+      <p>故事冲突有很多类型，主角面对的冲突不止一种。例：男孩在空难中生还，回家路上遭遇严寒、袭击、缺水缺食——这是人与自然的（外部）冲突。</p>
+
+      <div class="chain">
+        <div class="step"><b>人与自然</b><span>空难生还，挣扎回家：严寒、野兽袭击、缺水缺食。</span></div>
+        <div class="step"><b>人与人</b><span>在小木屋找到猎枪，却撞见非法猎人回家，对方怕被举报。</span></div>
+        <div class="step"><b>人与自我</b><span>不得不面对自己的内心冲突——故事因此变得更好。</span></div>
+      </div>
+
+      <p>人与自我的冲突，是构建角色时最受关注的类型：角色<em>以为自己要什么</em>、<em>实际真正要什么</em>、以及他如何改变。</p>
+
+      <div class="key">
+        <p>外部冲突构成情节基础，内部冲突推动人物成长、赋予故事更深意义。</p>
+      </div>
+
+      <p>常见内心冲突：道德抉择（为生存是否杀死他人等伦理问题）、身份认同——如《玩具总动员》中巴斯光年发现自己只是玩具，而非捍卫宇宙和平的星际刑警。在某些时刻，角色不确定自己到底是谁，接下来的经历最终将帮助他回答这个问题。</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="tech" id="t4">
+      <div class="head">
+        <div class="num">4</div>
+        <h2>扁平人物与圆形人物</h2>
+      </div>
+      <div class="time">05:03 – 06:30</div>
+
+      <p><strong>扁平人物</strong>相对简单单一，通常只有一两个突出特点，在故事中作用次要，往往用来衬托圆形人物。</p>
+
+      <p><strong>圆形人物</strong>立体复杂，有社会属性、背景、深刻的个人经历和习惯。</p>
+
+      <div class="key">
+        <p>无论怎样设计情感与心理，只要他对事物的观点和哲学不独特，角色就不会显得复杂。简单地说：<strong>角色必须具有双重性</strong>——互相矛盾的两种属性。</p>
+      </div>
+
+      <div class="eg">
+        <span class="tag">例证</span>
+        <p>监狱里的黑帮成员，按过往行为无疑是冷血恶人，但某天你听到他与妻子女儿的谈话，他表现出的亲切友善可能超过你见过的任何人。正是这种矛盾性让角色复杂立体，因为它反映了现实。</p>
+      </div>
+
+      <p>现实中处处有双重性，就连光都具有波和粒子两种性质。每个人都很矛盾——例如一对经常吵架的夫妻，可能非常相爱。</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="tech" id="t5">
+      <div class="head">
+        <div class="num">5</div>
+        <h2>情感重复</h2>
+      </div>
+      <div class="time">06:22 – 07:25</div>
+
+      <p>写故事就像谱写交响曲，一种情感的交响曲。</p>
+
+      <p>有人建议不要频繁重复相同情感的场景，但有时为了唤起某种情感，必须不止一次重复同一个音符，通过多次强化带来意想不到的强度，就像在钢琴上反复按同一个键。</p>
+
+      <div class="key">
+        <p>做法：先描写角色的期望，创造一个能唤起该情绪的想象场景，再展示现实细节，使情绪效果翻倍。</p>
+      </div>
+
+      <div class="eg">
+        <span class="tag">例证</span>
+        <p>女主一直渴望与男主在一起，幻想亲吻的场景，并详细描写幻想中的美好，对读者产生情感冲击。当两人真的互相表达心意并接吻时，你要让这个真实描述与女主的想象不同——更好、更深刻。</p>
+      </div>
+
+      <p>这个技巧适用于任何你想强调的情感：<em>一旦设定标准，就能超出读者的期望</em>。</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="tech" id="t6">
+      <div class="head">
+        <div class="num">6</div>
+        <h2>悬念：保持谜团开放</h2>
+      </div>
+      <div class="time">07:25 – 08:35</div>
+
+      <p>几乎所有故事都需要悬念——一种令人愉悦的期待感。制造它的方法之一，是设置一个必须被解开的谜团。</p>
+
+      <p>例：《2001太空漫游》中的黑色石板、《与拉玛相会》中的外星飞船。后者是一艘古老的圆柱型飞船闯入太阳系，人类派出探险者登船，但只有很短时间研究它，最终只收集到一些关于飞船创造者的线索，并未了解全部。</p>
+
+      <div class="eg">
+        <span class="tag">大脑机制</span>
+        <p>
+          研究动物与神经科学的专家发现，美洲狮看到鹿的踪迹时，大脑会释放冲动刺激它去追猎；一旦找到鹿，大脑立即停止产生多巴胺。也就是说，<strong>大脑的机制倾向于奖励搜寻而非发现</strong>——冲动来自期待，而非满足。
+        </p>
+        <p>谜团解开后血清素释放、让人镇静下来，这是大脑给予的奖励。</p>
+      </div>
+
+      <div class="key">
+        <p>重点：保持谜团开放、保持线索出现，这样就能建立期待。</p>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section class="tech" id="t7">
+      <div class="head">
+        <div class="num">7</div>
+        <h2>三次法则</h2>
+      </div>
+      <div class="time">08:35 – 09:33</div>
+
+      <p>重要的事情要说三遍，这与我们大脑接收信息的方式有关。</p>
+
+      <div class="eg">
+        <span class="tag">例证 · 描述风暴</span>
+        <p>① 风的呼啸声与雨水渐落在窗户上的声音；<br>
+          ② 主角打开门时，雨水打在脸上的感觉以及暴风雨的味道；<br>
+          ③ 角色看到雨幕在门外灯光下坠落，如同一道分叉的闪电。</p>
+        <p>三种感官创造一幅图像，每次都在描述风暴。</p>
+      </div>
+
+      <p>同样，主角解决故事中的问题时，最好也做三次尝试——这就是所谓的三次法则。</p>
+
+      <div class="key">
+        <p>原因：如果第一次尝试就成功，读者会觉得这个问题不严重，它没有足够的分量来承载这个故事。<br>所以主角最好经历两次挫折，第三次尝试解决问题。</p>
+      </div>
+    </section>
+
+    <!-- 附录 -->
+    <details>
+      <summary>附：校订说明与 7 处修正</summary>
+      <div class="fixlist">
+        <div class="fix"><span class="t">00:31</span><span class="old">伏笛膜</span> → <span class="new">伏地魔</span><span
+            class="why">3/3 配置一致</span></div>
+        <div class="fix"><span class="t">02:59</span><span class="old">三角链</span> → <span class="new">三角恋</span><span
+            class="why">上下文为熔炉形式清单</span></div>
+        <div class="fix"><span class="t">05:15</span><span class="old">原型人物</span> → <span class="new">圆形人物</span><span
+            class="why">麦基 flat / round character 术语体系</span></div>
+        <div class="fix"><span class="t">06:18</span><span class="old">可能会有些关系</span> → <span
+            class="new">可能非常相爱</span><span class="why">6/6 配置一致</span></div>
+        <div class="fix"><span class="t">08:25</span><span class="old">让人震惊下来</span> → <span
+            class="new">让人镇静下来</span><span class="why">5/5 配置一致</span></div>
+        <div class="fix"><span class="t">08:49</span><span class="old">嵌落</span> → <span class="new">渐落</span><span
+            class="why">2/2 配置一致</span></div>
+        <div class="fix" style="color:#8a8378;font-size:12.5px;padding-top:14px;">
+          转写使用 faster-whisper large-v3（int8 量化，单进程，4 线程），对疑似错误追加 6 种解码配置逐句投票，作品名与术语经外部核实。
+        </div>
+      </div>
+    </details>
+
+    <footer>
+      讲故事的七种技巧<br>
+      漫画 · 电影 · 小说 通用
+    </footer>
+
+  </div>
+</body>
+
+</html>
