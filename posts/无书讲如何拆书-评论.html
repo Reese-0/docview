@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>无书讲如何拆书</title>
+<style>
+  :root{
+    --bg:#f6f3ec;
+    --paper:#fffdf8;
+    --ink:#2c2925;
+    --ink-soft:#57514a;
+    --line:#e3ddd0;
+    --accent:#b8452f;
+    --accent-soft:#f4e6e1;
+    --gold:#a8842c;
+    --gold-soft:#faf2dc;
+    --blue:#2f5f8a;
+    --blue-soft:#e6eef6;
+    --shadow:0 2px 14px rgba(80,60,40,.07);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(184,69,47,.05), transparent 42%),
+      radial-gradient(circle at 88% 90%, rgba(47,95,138,.05), transparent 42%),
+      var(--bg);
+    color:var(--ink);
+    font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","SimSun",Georgia,serif;
+    font-size:17px;
+    line-height:1.95;
+    letter-spacing:.01em;
+  }
+  .wrap{
+    max-width:900px;
+    margin:0 auto;
+    padding:0 22px 90px;
+  }
+
+  /* ===== 页头 ===== */
+  header.hero{
+    padding:70px 0 42px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+    margin-bottom:46px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:50%;bottom:-1px;
+    transform:translateX(-50%);
+    width:90px;height:3px;
+    background:var(--accent);
+    border-radius:2px;
+  }
+  header.hero h1{
+    margin:0 0 16px;
+    font-size:2.45rem;
+    letter-spacing:.14em;
+    font-weight:700;
+  }
+  header.hero p.sub{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:.98rem;
+    letter-spacing:.28em;
+  }
+
+  /* ===== 目录 ===== */
+  nav.toc{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:26px 30px;
+    margin-bottom:56px;
+    box-shadow:var(--shadow);
+  }
+  nav.toc h2{
+    margin:0 0 16px;
+    font-size:1rem;
+    letter-spacing:.3em;
+    color:var(--accent);
+    font-weight:700;
+  }
+  nav.toc ol{
+    margin:0;
+    padding:0;
+    list-style:none;
+    counter-reset:toc;
+  }
+  nav.toc ol > li{
+    counter-increment:toc;
+    margin-bottom:10px;
+  }
+  nav.toc ol > li > a{
+    color:var(--ink);
+    text-decoration:none;
+    font-weight:700;
+    display:inline-block;
+    border-bottom:1px dashed transparent;
+    transition:.2s;
+  }
+  nav.toc ol > li > a::before{
+    content:counter(toc,decimal-leading-zero);
+    color:var(--accent);
+    font-family:Georgia,serif;
+    margin-right:12px;
+    font-size:.9em;
+  }
+  nav.toc ol > li > a:hover{
+    color:var(--accent);
+    border-bottom-color:var(--accent);
+  }
+  nav.toc ul{
+    margin:6px 0 0 34px;
+    padding:0;
+    list-style:none;
+    font-size:.93rem;
+    color:var(--ink-soft);
+  }
+  nav.toc ul li{ margin:3px 0; }
+  nav.toc ul li a{
+    color:var(--ink-soft);
+    text-decoration:none;
+  }
+  nav.toc ul li a:hover{ color:var(--accent); }
+
+  /* ===== 章节 ===== */
+  section{ margin-bottom:64px; }
+  h2.sec{
+    font-size:1.6rem;
+    margin:0 0 8px;
+    letter-spacing:.08em;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  h2.sec .num{
+    font-family:Georgia,serif;
+    font-size:1.05rem;
+    color:#fff;
+    background:var(--accent);
+    width:38px;height:38px;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    flex:none;
+    letter-spacing:0;
+    box-shadow:0 3px 8px rgba(184,69,47,.28);
+  }
+  .sec-line{
+    height:1px;
+    background:linear-gradient(to right,var(--line),transparent);
+    margin:18px 0 30px;
+  }
+  h3.sub{
+    font-size:1.16rem;
+    margin:38px 0 14px;
+    padding-left:14px;
+    border-left:4px solid var(--gold);
+    letter-spacing:.05em;
+    color:#3a352e;
+  }
+  h4.mini{
+    font-size:1.02rem;
+    margin:26px 0 10px;
+    color:var(--blue);
+    letter-spacing:.06em;
+  }
+  h4.mini::before{
+    content:"◆";
+    font-size:.72em;
+    margin-right:8px;
+    color:var(--blue);
+    vertical-align:2px;
+  }
+  p{ margin:0 0 16px; }
+  ul.plain, ol.plain{ margin:0 0 18px; padding-left:1.5em; }
+  ul.plain li, ol.plain li{ margin-bottom:8px; }
+
+  /* ===== 强调 ===== */
+  em.k{
+    font-style:normal;
+    font-weight:700;
+    color:var(--accent);
+    background:linear-gradient(transparent 62%, rgba(184,69,47,.16) 62%);
+    padding:0 1px;
+  }
+  strong.b{ color:#3a352e; }
+  .think{
+    font-style:normal;
+    font-weight:700;
+    color:var(--blue);
+    background:var(--blue-soft);
+    border-radius:4px;
+    padding:1px 7px;
+    font-size:.95em;
+    letter-spacing:.05em;
+  }
+
+  /* ===== 引用 / 卡片 ===== */
+  blockquote{
+    margin:22px 0;
+    padding:18px 24px;
+    background:var(--accent-soft);
+    border-left:4px solid var(--accent);
+    border-radius:0 10px 10px 0;
+    color:#4a3b36;
+    font-size:.97rem;
+  }
+  blockquote p:last-child{ margin-bottom:0; }
+
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:24px 28px;
+    margin:22px 0;
+    box-shadow:var(--shadow);
+  }
+  .card.gold{
+    background:var(--gold-soft);
+    border-color:#ecd9a8;
+  }
+  .card.blue{
+    background:var(--blue-soft);
+    border-color:#c9dcee;
+  }
+  .card h5{
+    margin:0 0 12px;
+    font-size:.98rem;
+    letter-spacing:.14em;
+    color:var(--gold);
+  }
+  .card.blue h5{ color:var(--blue); }
+  .card p:last-child, .card ul:last-child{ margin-bottom:0; }
+
+  /* 书例 */
+  .cases{
+    display:grid;
+    gap:12px;
+    margin:20px 0;
+  }
+  .case{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-left:4px solid var(--gold);
+    border-radius:0 10px 10px 0;
+    padding:16px 22px;
+    box-shadow:var(--shadow);
+    font-size:.96rem;
+  }
+  .case .t{
+    font-weight:700;
+    color:#3a352e;
+    display:block;
+    margin-bottom:6px;
+  }
+  .case .t::before{
+    content:"《";
+  }
+  .case .t::after{
+    content:"》";
+  }
+  .case p{ margin:0; color:var(--ink-soft); }
+
+  /* 流程 / 要素列表 */
+  .flow{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin:18px 0;
+  }
+  .flow span{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:6px 16px;
+    font-size:.9rem;
+    color:var(--ink-soft);
+    box-shadow:var(--shadow);
+  }
+  .flow span b{ color:var(--accent); }
+
+  /* 结尾 */
+  .final{
+    background:linear-gradient(160deg,#2c2925,#423a31);
+    color:#f3ede2;
+    border-radius:14px;
+    padding:40px 38px;
+    margin-top:26px;
+    box-shadow:0 8px 30px rgba(50,40,30,.22);
+  }
+  .final h3{
+    margin:0 0 18px;
+    font-size:1.25rem;
+    letter-spacing:.12em;
+    color:#f0c96a;
+    border:none;
+    padding:0;
+  }
+  .final p{ color:#e0d7c8; }
+  .final p:last-child{ margin-bottom:0; }
+  .final em.k{
+    color:#f0c96a;
+    background:linear-gradient(transparent 62%, rgba(240,201,106,.25) 62%);
+  }
+
+  /* 分隔装饰 */
+  .ornament{
+    text-align:center;
+    color:#c9bda8;
+    letter-spacing:1em;
+    margin:50px 0;
+    font-size:.9rem;
+  }
+
+  @media (max-width:640px){
+    body{ font-size:16px; line-height:1.9; }
+    header.hero{ padding:48px 0 32px; }
+    header.hero h1{ font-size:1.75rem; letter-spacing:.1em; }
+    header.hero p.sub{ letter-spacing:.16em; font-size:.85rem; }
+    nav.toc{ padding:20px 20px; }
+    h2.sec{ font-size:1.3rem; }
+    .card{ padding:18px 20px; }
+    .final{ padding:28px 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1>无书讲如何拆书</h1>
+    <p class="sub">从读者视角 · 到作者视角</p>
+  </header>
+
+  <nav class="toc">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#s1">书名，简介</a>
+        <ul>
+          <li><a href="#s1-1">长书名 / 短书名</a></li>
+          <li><a href="#s1-2">书名与简介的逻辑一致性</a></li>
+        </ul>
+      </li>
+      <li><a href="#s2">小说开篇</a>
+        <ul>
+          <li><a href="#s2-1">开篇的本质：让读者感兴趣</a></li>
+          <li><a href="#s2-2">文章基调与草蛇灰线</a></li>
+        </ul>
+      </li>
+      <li><a href="#s3">小说中间部分</a>
+        <ul>
+          <li><a href="#s3-1">剧情期待感的延伸与衔接</a></li>
+          <li><a href="#s3-2">剧情高潮是如何铺垫的</a></li>
+        </ul>
+      </li>
+      <li><a href="#s4">剧情后段</a>
+        <ul>
+          <li><a href="#s4-1">如何让剧情不崩</a></li>
+        </ul>
+      </li>
+      <li><a href="#s5">实战拆书：《苟在初圣魔门当人材》</a></li>
+    </ol>
+  </nav>
+
+  <p style="text-align:center;font-size:1.05rem;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:56px;">
+    拆书怎么拆，要看什么内容？
+  </p>
+
+  <!-- ================= 一 ================= -->
+  <section id="s1">
+    <h2 class="sec"><span class="num">一</span>书名，简介</h2>
+    <div class="sec-line"></div>
+
+    <h3 class="sub" id="s1-1">1.1　长书名 / 短书名</h3>
+
+    <h4 class="mini">长书名</h4>
+    <p>
+      <em class="k">信息量</em>——题材、世界观、金手指以及后续剧情引导，要明确介绍。
+    </p>
+    <div class="card gold">
+      <h5>示例：模拟修仙：开局全点悟性</h5>
+      <ul class="plain">
+        <li><b>模拟修仙</b>：题材方向</li>
+        <li><b>金手指</b>：模拟器</li>
+        <li><b>题材</b>：休闲、悟性流</li>
+        <li><b>剧情</b>：大致的剧情走向</li>
+      </ul>
+    </div>
+
+    <h4 class="mini">短书名</h4>
+    <p>
+      要具备：<em class="k">信息量</em>、<em class="k">稳重</em>、<em class="k">逼格更高一点</em>。
+    </p>
+    <p>
+      短书名同样要透露出信息量，讲清楚自己的卖点。
+    </p>
+
+    <h3 class="sub" id="s1-2">1.2　书名与简介的逻辑一致性</h3>
+    <p>
+      书名和简介的逻辑是一致的，都是给读者足够的信息，让读者产生阅读兴趣。
+    </p>
+
+    <blockquote>
+      <p>
+        就如同在街上发传单。你找路人发单子，要让路人收下，并有兴趣看两眼。在书名和简介几句话的时间里，用任何方式、传递任何信息量都可以，<em class="k">只要能让读者产生兴趣就 OK 了</em>。
+      </p>
+    </blockquote>
+
+    <p>大部分作者的写法是：写金手指、写题材、写剧情元素，让读者产生阅读兴趣（很八股文）。</p>
+
+    <div class="cases">
+      <div class="case">
+        <span class="t">西游：长生仙族从五行山喂猴开始</span>
+        <p>简单介绍一下剧情，做一下剧情上的信息传递。</p>
+      </div>
+      <div class="case">
+        <span class="t">术士手册</span>
+        <p>写个笑话，让读者会心一笑，吸引读者兴趣。</p>
+      </div>
+      <div class="case">
+        <span class="t">从斩妖除魔开始长生不死</span>
+        <p>① 妖魔乱世的世界观；② 金手指消耗寿命推演武学；③ 我之后会在这个世界乱砍。<br>——简练且标准。</p>
+      </div>
+      <div class="case">
+        <span class="t">肝出个万发道君</span>
+        <p>① 主角打鱼人；② 金手指可以升级功法；③ 仙侠世界观。</p>
+      </div>
+    </div>
+
+    <div class="card blue">
+      <h5>思考</h5>
+      <p>
+        想一想榜单上的书是什么样的元素（书名、简介）吸引自己点进去、看下去的？
+        同样思考一下：<span class="think">自己的书名简介要有什么元素才能吸引读者？</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= 二 ================= -->
+  <section id="s2">
+    <h2 class="sec"><span class="num">二</span>小说开篇</h2>
+    <div class="sec-line"></div>
+
+    <h3 class="sub" id="s2-1">2.1　开篇的本质：跟书名简介是同一个道理</h3>
+
+    <p>
+      本质上来讲，跟书名、简介是同一个道理——<em class="k">让读者感兴趣</em>。
+    </p>
+    <p>
+      相比两三百万字的书，头三章也讲不出什么东西，更多的是吸引读者兴趣。后续二三十章的内容，你才能去正经构筑一个剧情来。开篇只是奠定一下文章基调：讲一下世界观，讲一下什么东西读者感兴趣，把读者吸引进来。
+    </p>
+    <p>
+      只是到了正文这里，读者耐心会更多一点，会允许你用更多的字和剧情，去交代你要表达的。
+    </p>
+
+    <blockquote>
+      <p>
+        你看到一本爆款的小说，看得很爽很开心。你把他的开头三章截留下来分析，思考哪里吸引你、哪里牛逼、什么元素、什么内容，把你留了下来。
+      </p>
+    </blockquote>
+
+    <div class="cases">
+      <div class="case">
+        <span class="t">大侦探福尔摩斯</span>
+        <p>开头老杰克杀人和交水费的剧情。作者展示自己的个人功底，设计一个短小精悍的小反转，展示笔力。随后的世界观展示富有张力，代入感强。</p>
+      </div>
+      <div class="case">
+        <span class="t">督工</span>
+        <p>开篇的设计以【刻画人设】为核心，刻画了一个很普通、但是代入感、沉浸感极强的人设，拉扯读者阅读。</p>
+      </div>
+      <div class="case">
+        <span class="t">阳神</span>
+        <p>开头做了一个【逻辑认同】的设定，让读者在潜移默化中，不自觉地站在主角视角，带入进去。（让读者认同你的观点、认同你的想法、认同你的逻辑——他是认同你的。认可意味着代入。）</p>
+      </div>
+    </div>
+
+    <p>
+      看童锦程和老八本质没区别，就是看人设。看直播看下去的原因，或许是你觉得内容比较有趣，又或者这个人设你感兴趣，或者其他什么你感兴趣——就像看无书直播是对讲如何写小说感兴趣。
+      <em class="k">最重要的是感兴趣。</em>
+    </p>
+
+    <h3 class="sub" id="s2-2">2.2　进阶：文章基调与草蛇灰线</h3>
+
+    <p>
+      小说开篇你无论用什么元素——或者是金手指，或者是剧情设计，或者是人物设定，又或者是比较有趣的其他元素——都是为了让读者产生期待感、产生阅读兴趣。这是一个最基础的元素。但在此之上，也有进阶的东西。
+    </p>
+
+    <h4 class="mini">比如——文章基调（开篇就奠定）</h4>
+    <div class="flow">
+      <span><b>辰东</b>：正气，霸道</span>
+      <span><b>梦入神机</b>：凌厉，戾气重，霸道</span>
+      <span><b>《青山》</b>：极端，理智，危机重重</span>
+      <span><b>《道诡异仙》</b>：疯狂的基调，癫、狂</span>
+    </div>
+
+    <h4 class="mini">比如——草蛇灰线</h4>
+    <p>
+      大纲比较好的作者，可以前后剧情闭环，会让读者很爽。
+    </p>
+    <p>
+      两者是相互映照的。有的文章基调是开局就在写铺垫，一直铺铺铺铺垫到中期，中后期终于起势的时候才把东西写出来的——但开篇的时候，就已经参与这个东西了。
+    </p>
+  </section>
+
+  <!-- ================= 三 ================= -->
+  <section id="s3">
+    <h2 class="sec"><span class="num">三</span>小说中间部分</h2>
+    <div class="sec-line"></div>
+
+    <h3 class="sub" id="s3-1">3.1　剧情期待感延伸是怎么做到的？</h3>
+    <p style="color:var(--ink-soft);font-size:.96rem;">
+      延伸期待感，衔接剧情——把人骗进来了，怎么留下这些人。
+    </p>
+
+    <p>
+      开头的时候，我们做了引子，做了剧情的期待感，做了剧情上的一些交代。
+    </p>
+    <p>
+      第一个期待感完成，会有人离开。作者在描述的时候，是用什么手法来串联起来第一个故事和第二个故事？——这就是<em class="k">衔接期待感</em>。
+    </p>
+    <p>期间铺设了几条线？</p>
+    <p>
+      <strong class="b">换地图后很多人会不看了，因为已经没有期待感了。</strong>
+    </p>
+
+    <div class="card gold">
+      <h5>如何换地图 —— 宅猪的“莲花写作法”</h5>
+      <p>
+        设定一个核心地图，小地图只是为了辅助。每次去了小地图，只是去做事、拓展了世界观，但是我们还要回来。我们所有的期待感、所有的人物关系、所有的剧情，还是在一个核心地图上。
+      </p>
+    </div>
+
+    <div class="cases">
+      <div class="case">
+        <span class="t">阳神</span>
+        <p>设置线性剧情，核心剧情始终不结束，中间穿插描写大量内容，勾勒支线，穿插描写。开局的大反派，一直到快结局了才打死。</p>
+      </div>
+      <div class="case">
+        <span class="t">异界奶爸</span>
+        <p>开局穿越，结局穿回去。</p>
+      </div>
+      <div class="case">
+        <span class="t">万族之劫</span>
+        <p>开局要平定万族，一直打到大结局。（道成一直不死，也是支线的期待感）</p>
+      </div>
+    </div>
+
+    <p>
+      更进一步的高手，会<em class="k">多线并行</em>。从某个事件线入手，然后在描写事件线的同时，反复多次地写其他支线的东西，勾勒多条支线，然后支线重新交织成为主线。
+    </p>
+    <p style="color:var(--ink-soft);">
+      比如：种田搞钱的同时认识女主，发展事业的同时发展感情，然后生成感情线。读者既期待种田收获，又期待感情线结果。
+    </p>
+
+    <div class="card blue">
+      <h5>思考</h5>
+      <p>
+        拆书的时候思考：看完第一个故事结束，自己为什么还能接着看第二个故事？别人是怎么做的前后衔接？对面是怎么处理的？
+      </p>
+    </div>
+
+    <h3 class="sub" id="s3-2">3.2　剧情高潮是怎么铺垫的？</h3>
+    <p style="color:var(--ink-soft);font-size:.96rem;">
+      铺垫了多久，用的什么手法，为什么能够做到？
+    </p>
+
+    <p>
+      大爽点，不是通过三言两语就能够描述清楚的。它是通过几十万字的剧情，反复交织、反复勾勒，让你产生期待，然后再来一个超级的大满足。
+    </p>
+
+    <blockquote>
+      <p>
+        举例《遮天》的圣体大成。这是一个超级爆炸的爽点，那么你为什么会觉得爽呢？
+      </p>
+      <p>
+        <span class="think">他是怎么在剧情上反复铺垫的？在什么地方铺垫的？怎么描述的？做的反转？剧情用了多久？前后如何描述？</span>
+      </p>
+    </blockquote>
+
+    <div class="card">
+      <h5 style="color:var(--accent);">案例拆解：《顶上战争》</h5>
+      <p>
+        从艾斯出场就在铺垫：强大的实力、帅气的外表、成熟稳重的性格；在沙之国帮路飞的忙；再铺垫去抓黑胡子。还有路飞和黑胡子第一次见面，对话表现黑胡子也不差。然后在蛇岛意外知道艾斯被抓。然后推进城小高潮铺垫，最后路飞到海军总部，白胡子海贼团到，三大将、七武海到，<em class="k">彻底引爆顶上战争，大高潮爆炸爽点！！！</em>最后红发海贼团到，收尾结束。
+      </p>
+    </div>
+
+    <div class="card">
+      <h5 style="color:var(--accent);">案例拆解：《模拟长生路》——“小友，你在期待什么？”</h5>
+      <p>
+        这些名场面是怎么做到的？主角依赖金手指作弊，顺风顺水，顺习惯了，完全不觉得会翻车。然后在一次剧情中翻车，触及到了底牌，塑造出一种非常强烈的危机感，调动读者情绪，让读者感官层次递进。
+      </p>
+      <p>
+        就像一个游戏你玩了几年，一直和网友对喷。你觉得喷完、游戏一关，事情结束了。结果有一次，你俩喷着喷着，忽然对面来一句：<em class="k">你家是在幸福小区花园路32号是吧。</em>这话一出你就愣住了，被开盒浑身一激灵。超出意料之内，突如其来的危机。
+      </p>
+    </div>
+
+    <p>
+      所以——你们在看书的时候，同样的要去<span class="think">思考</span>：这些名场面、这些有意思的剧情，需要怎么设计？怎么铺垫？如果是通过【单元剧情】递进塑造，那么【单元剧情】是怎么设计的？用了多少字？【单元】目的是什么？【单元剧情】如何衔接？
+    </p>
+    <p style="color:var(--ink-soft);font-size:.95rem;">
+      （无书：写小说其实也就他妈的那么几百个点，你把它都注意好就完事儿了。）
+    </p>
+  </section>
+
+  <!-- ================= 四 ================= -->
+  <section id="s4">
+    <h2 class="sec"><span class="num">四</span>剧情后段</h2>
+    <div class="sec-line"></div>
+
+    <h3 class="sub" id="s4-1">4.1　如何让剧情不崩</h3>
+    <p>
+      不崩有很多因素需要考虑：<em class="k">【剧情设计】</em>、<em class="k">【世界观问题】</em>、<em class="k">【人设问题】</em>。
+    </p>
+
+    <blockquote>
+      <p>
+        写书是一个长线战斗。写书的第一个第二个月，你可能故事还没展开，想表达的东西还没有表达清楚，你还是很亢奋的，你还是很有表达欲的。但是三四个月呢？半年呢？尤其是当你的文章到两百万字以上，你是否还有能力掌握剧情，你是否还能保证这个故事还是有趣的。
+      </p>
+      <p>
+        <b>解决方法：</b>看书。看别人是如何在两百万字之后还有故事去讲，还能够去让读者产生兴趣。
+      </p>
+    </blockquote>
+
+    <h4 class="mini">【剧情设计】</h4>
+    <ul class="plain">
+      <li>
+        <b>节奏</b>——同样的剧情，有的人确实就是比你讲的要慢一点，但是虽然慢，还是很精彩。（同样的东西，你按大纲的写法和按照故事的一个讲法，它的长度是截然不同的。有人五十万字还没出新手村，还有人看，这就很牛逼，节奏很棒。）
+      </li>
+      <li>
+        <b>内容</b>——我要如何保证，我的前 200 万字没有出现明显的 bug？如何让剧情就算有毒点，读者也能接受地往后去看？
+      </li>
+      <li>
+        <b>走向</b>——精彩的内容设计，故事大纲很充裕，两百万字才只是个开始。
+      </li>
+    </ul>
+
+    <h4 class="mini">【世界观问题】</h4>
+    <p>
+      战力体系、世界本身设计、剧情相关设计。你只有做一个相对而言逻辑比较好、可探索度比较高的世界观，才能容纳你的剧情。
+      <span style="color:var(--ink-soft);">（写第一章的时候，已经在为后面的 200 万字搭建框架了。）</span>
+    </p>
+
+    <div class="cases">
+      <div class="case">
+        <span class="t">诡秘之主</span>
+        <span class="t">玄鉴仙族</span>
+        <p>都是以世界观为代表出圈的作品，世界观非常出彩。就是动笔之前他们就想好了这些东西，所以能够保证他们的故事到了中后段还能有一个探索度。</p>
+      </div>
+      <div class="case">
+        <span class="t">万族之劫</span>
+        <p>开局只要诸天和大夏府，之后大明府。去了诸天之后 36 古城、星宇府邸、死灵界，然后上界。之后又铺三门后世界的世界观。</p>
+      </div>
+    </div>
+
+    <p style="color:var(--ink-soft);">
+      看书的时候，如果觉得这本书很精彩，它到两百万字还能够往后去写、还能写得很精彩，那你就去<span class="think">思考</span>一下：它是如何设计世界观的？在什么时候去铺的世界观？铺的时候，它的世界观容纳程度可能写到几百万字？看书要总结。
+    </p>
+
+    <h4 class="mini">【人设问题】</h4>
+    <p>
+      人物的成长变化、人设的本身设定、行为。任何长篇的作品都会涉及人物的成长、人设的变化。最开始一个事件打造一个人设，但长篇小说的故事精彩度和容纳度非常高，肯定会涉及到人物的成长。
+    </p>
+    <p>
+      <span class="think">思考：用几个剧情去彰显角色的成长变化？如何保证每一次的人设变化前后不割裂？</span>
+      <span style="color:var(--ink-soft);">（很多作品都是为了这点醋包的饺子，为了人设有这么一个变化，才安排写的一个剧情。）</span>
+    </p>
+
+    <div class="cases">
+      <div class="case">
+        <span class="t">蛊真人</span>
+        <p>名场面——岂不闻，天下英雄如过江之鲫。（被人背刺了，然后就戒骄戒躁了）</p>
+      </div>
+      <div class="case">
+        <span class="t">将夜</span>
+        <p>为什么不能是个门房的孩子呢？</p>
+      </div>
+      <div class="case">
+        <span class="t">龙族</span>
+        <p>路明非，从废物到烫金的西装领口。</p>
+      </div>
+      <div class="case">
+        <span class="t">遮天</span>
+        <p>从叶黑，到我为天帝当镇杀世间一切敌。</p>
+      </div>
+    </div>
+
+    <p>
+      <span class="think">思考</span>：是在什么时候？用什么样的方式？去塑造出的一个效果？
+    </p>
+    <p>
+      你只有创造出一个优秀的人设，读者才会感觉到，他有一种高级的爽。低级的爽很直白单纯——我打个脸、我收获了等等。高级的爽一定是多层次的、多元的。北岛的诗歌《波兰来客》就是多层次的表达：文学、爱情和旅行，饮酒，干杯，喝破碎。就像看小孩，他长大了，心理上成长很欣慰，个子长大了能帮忙。
+    </p>
+
+    <div class="card blue">
+      <h5>带着脑子看书</h5>
+      <p>
+        这些是思路，是如何分析、分析之后如何转化成自己的东西的一个思路。带着自己的脑子去看书，去高强度的<span class="think">思考</span>。
+      </p>
+      <p>
+        <b>因为作者写书的时候，他就是在高强度地思考啊！！！</b>
+      </p>
+      <p>
+        任何一本出成绩的书，作者在描述某些东西的时候，都是带有【目的性】的。你要通过故事本身倒推作者的目的。尝试代入作者视角思考后面怎么去写，思考这个剧情作者怎么设计的，以及后面怎么衔接。
+      </p>
+      <p>
+        你要去<span class="think">思考</span>这些目的，甚至更进一步去想：如果同样的剧情点，换你来执笔，你要怎么设计？
+      </p>
+    </div>
+
+    <blockquote>
+      <p>
+        你作为一个读者，你爱他妈怎么看书就怎么看书，你想怎么骂作者就怎么骂作者。你是消费者，你是来爽的，没有任何问题。
+      </p>
+      <p>
+        但是如果你是一个作者，你想提升，还是要带点脑子的。<em class="k">摆正你的身份，从【读者视角】转化为【作者视角】</em>。去看书，去思考，去研究创作者的目的，去换位思考，尝试性地汲取对方的优势优点。
+      </p>
+      <p>
+        还有，<b>你是来学习优点的，不是来挑刺的。不要和市场作对。</b>
+      </p>
+    </blockquote>
+  </section>
+
+  <div class="ornament">◈ ◈ ◈</div>
+
+  <!-- ================= 五 ================= -->
+  <section id="s5">
+    <h2 class="sec"><span class="num">五</span>实战拆书：《苟在初圣魔门当人材》</h2>
+    <div class="sec-line"></div>
+
+    <h4 class="mini">世界观与人设</h4>
+    <p>
+      整个世界观就是一个巨大的阴谋论：<em class="k">越畜生越强大</em>。只有最畜生的、最老谋深算的，才能活到最后。
+    </p>
+    <p>
+      但是在这个极端的世界观当中，又穿插了一些很有意思的【正向人设】。类似于《蛊真人》，虽然是一个极端人设和世界观，但是出圈的元素和点还有梗，都是正向的。魔门这本书里展示了很多惊才艳艳的人设：重光师叔、荡魔师尊，还有主角惊世的智慧，还有吊了 512 章都还没吃的必吃榜第一飞雪真君——都是一些很正向的元素。
+    </p>
+
+    <h4 class="mini">站在巨人的肩膀上：杂糅各家元素</h4>
+
+    <div class="card">
+      <h5 style="color:var(--accent);">模拟修仙路的【框架】</h5>
+      <p>节奏和框架都很棒。名场面“小友，你在期待什么”，在初圣魔门复刻了“世尊”，作者学习分析了模拟路的骨架。</p>
+    </div>
+
+    <div class="card">
+      <h5 style="color:var(--accent);">玄鉴仙族的【体系】</h5>
+      <p>读者其实已经看腻了旧的体系，现在喜欢这种金丹果位、世尊——【新的、有趣的且逻辑链完整的新体系】。</p>
+    </div>
+
+    <div class="card">
+      <h5 style="color:var(--accent);">大奉打更人的【社区舆论】</h5>
+      <p>
+        大奉出圈台词“今日无事，勾栏听曲”“插花弄玉”，用色色充当小说润滑剂。魔门色色更多，本身就越畜生越强，而双修可以提取别人记忆，获得一些能力（简直是不双修都不行口牙！）。
+      </p>
+      <p>
+        所以魔门里只要战败就有战败 CG。敌人男的就给他变形，让马仔上然后搜魂马仔；遇到好看的就“你且退下，不必就委屈一下自己”。
+      </p>
+      <p>
+        这就是初圣魔门的第一个舆论——搞出一个很离谱的超人流修仙（越超人越强），就导致读者在【对战情节】【某些具备特殊知识的人物面前】【文章中所有的女角色面前】都开始了剧烈的互动（都开始了剧烈的抖动，忍不住轻哼了起来）。
+      </p>
+      <p>
+        同时他还设计了【越畜生，越强大】的设定，文章中遇到的所有福利、机缘都可以当做钓鱼处理。全体读者基本上都要轻微 PTSD——当文章遇到所有的剧情变化，读者都会开始高度猜测阴谋论。
+        <b>这是一个强大的互动点，会让读者产生思考的地方，这是一个共鸣写法。</b>
+      </p>
+    </div>
+
+    <h4 class="mini">特殊话题点：人为造梗，造互动</h4>
+    <ul class="plain">
+      <li><b>江北的圣宗</b>——人均超级畜生。遇到主角的畜生行为，配角甚至会配合地询问一句：“阁下可以圣宗弟子？”（借配角之口吐槽，抬升情绪）</li>
+      <li><b>剑阁</b>——人均双边剑种。</li>
+      <li><b>佛门</b>——人均世尊。（“世尊”是个形容词，通过高强度的反复暗示和代指，可以理解为超级死变态）</li>
+    </ul>
+    <p>
+      这些都是具备传播属性的互动点。作者在通过反复描写在造梗，让读者互动、认同这些观点。
+    </p>
+    <p style="color:var(--ink-soft);">
+      例如：“得罪了方丈还想走”——反复暗示方丈＝小心眼，贴标签。还有稳健师兄的“此番渡劫几率只有九成八，这和送死有什么区别”。
+    </p>
+    <p>
+      这种人为造梗、造互动的写法，形成类似的社区舆论，是《道诡异仙》的坐忘道。《道诡异仙》里“道爷我成了”只是让他有万订的基础，真正出圈的是坐忘道这种群体性狂欢——无论看没看过道诡异仙，都会玩“分不清，我真的分不清”。
+    </p>
+    <p>
+      这种写法能让读者看到“初圣”“剑种”“世尊”就会心一笑。后面习惯了作者的写作手法，你看到文章，不用点开评论就知道大家在怎么玩梗，就开始笑了。
+      <em class="k">这种能力可以有效地提高读者粘性，直接导致他的均订和追订的比例近乎逆天（这算是他成为爆款的超级核心）。</em>
+    </p>
+
+    <h4 class="mini">其他</h4>
+    <p>
+      还有就是剧情的稳扎稳打，以及变态的更新能力——作者的十更道歉法（<b>超级核心点</b>）。
+    </p>
+  </section>
+
+  <div class="final">
+    <h3>写在最后</h3>
+    <p>
+      拆书不是为了挑刺，而是为了<em class="k">逆向工程</em>：从成品的爽感，倒推作者的设计。
+    </p>
+    <p>
+      书名简介想的是“怎么把人骗进来”；开篇想的是“怎么让人留下来”；中间部分想的是“怎么衔接期待感、怎么铺垫大高潮”；后段想的是“怎么两百多万字还不崩”。
+    </p>
+    <p>
+      带着脑子去看书，去高强度地<span style="color:#f0c96a;font-weight:700;">思考</span>——因为作者写书的时候，他就是在高强度地思考啊。
+    </p>
+  </div>
+
+</div>
+</body>
+</html>
