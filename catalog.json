@@ -1,7 +1,25 @@
 {
-  "generatedAt": "2026-10-08T02:49:23.894Z",
-  "count": 2,
+  "generatedAt": "2026-10-09T10:12:13.531Z",
+  "count": 4,
   "posts": [
+    {
+      "title": "讲故事的七种技巧 · 全文手机阅读版",
+      "file": "讲故事的七种技巧_全文.html",
+      "url": "posts/%E8%AE%B2%E6%95%85%E4%BA%8B%E7%9A%84%E4%B8%83%E7%A7%8D%E6%8A%80%E5%B7%A7_%E5%85%A8%E6%96%87.html",
+      "date": "2026-10-09",
+      "updatedAt": "2026-10-09T18:11:51+08:00",
+      "description": "",
+      "tags": []
+    },
+    {
+      "title": "讲故事的七种技巧 · 手机阅读版",
+      "file": "讲故事的七种技巧_精读版.html",
+      "url": "posts/%E8%AE%B2%E6%95%85%E4%BA%8B%E7%9A%84%E4%B8%83%E7%A7%8D%E6%8A%80%E5%B7%A7_%E7%B2%BE%E8%AF%BB%E7%89%88.html",
+      "date": "2026-10-09",
+      "updatedAt": "2026-10-09T18:11:51+08:00",
+      "description": "",
+      "tags": []
+    },
     {
       "title": "拆书方法手册 · 内容整理报告",
       "file": "拆书方法手册.html",
