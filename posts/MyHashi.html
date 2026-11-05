@@ -1,0 +1,3501 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="version" content="0.1.1">
+<title>橋をかけろ · Hashi 桥梁</title>
+<style>
+:root {
+  --bg: #f3f1ea;
+  --bg-glow-1: #e7eef2;
+  --bg-glow-2: #f6efe2;
+  --surface: #ffffff;
+  --surface-soft: #f6f8f9;
+  --line: #e4e7e9;
+  --line-strong: #d3d9dc;
+  --text: #26313a;
+  --muted: #77828a;
+  --accent: #d99a2b;
+  --accent-soft: #fbf0d9;
+  --valid: #008c00;
+  --invalid: #b3261e;
+  --shadow-lg: 0 24px 60px -34px rgba(30, 48, 58, .55);
+  --shadow-sm: 0 2px 6px -2px rgba(30, 48, 58, .25);
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --board-bg: #f4f7f8;
+  --board-dot: #ccd8dd;
+  --board-grid: #dae4e8;
+  --island-fill: #ffffff;
+  --island-ring: #98a2a9;
+  --island-text: #3d4750;
+  --bridge: #6d767c;
+}
+
+[data-theme="dark"] {
+  --bg: #12171a;
+  --bg-glow-1: #172226;
+  --bg-glow-2: #1a1712;
+  --surface: #1b2226;
+  --surface-soft: #212a2f;
+  --line: #2c353a;
+  --line-strong: #3a444a;
+  --text: #e8edef;
+  --muted: #94a0a7;
+  --accent: #edb44e;
+  --accent-soft: #3a2f1b;
+  --valid: #3ec25f;
+  --invalid: #ff6f61;
+  --shadow-lg: 0 24px 60px -30px rgba(0, 0, 0, .8);
+  --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, .6);
+  --board-bg: #1e262a;
+  --board-dot: #3a474e;
+  --board-grid: #333f45;
+  --island-fill: #263136;
+  --island-ring: #8b979e;
+  --island-text: #e6ecee;
+  --bridge: #9aa6ac;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(1100px 620px at 12% -10%, var(--bg-glow-1), transparent 62%),
+    radial-gradient(900px 520px at 96% 108%, var(--bg-glow-2), transparent 60%),
+    var(--bg);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+  transition: background-color .3s ease, color .3s ease;
+}
+
+.app {
+  height: 100vh;
+  height: 100dvh;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ---------- 顶栏 ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand { display: flex; flex-direction: column; gap: 2px; margin-right: auto; }
+
+.brand h1 {
+  margin: 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", Georgia, serif;
+  font-size: 1.26rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  line-height: 1.1;
+}
+
+.brand p {
+  margin: 0;
+  font-size: .64rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.level-btn {
+  appearance: none;
+  font: inherit;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease, transform .18s ease;
+}
+
+.level-btn:hover { border-color: var(--line-strong); }
+.level-btn:active { transform: scale(.98); }
+.level-btn span { font-size: .82rem; font-weight: 600; letter-spacing: .02em; }
+.level-btn small {
+  font-size: .68rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  transition: color .18s ease, border-color .18s ease, transform .18s ease;
+}
+
+.icon-btn:hover { color: var(--text); border-color: var(--line-strong); }
+.icon-btn:active { transform: scale(.94); }
+.icon-btn svg { width: 18px; height: 18px; }
+
+/* ---------- 状态栏 ---------- */
+.hud {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.hud-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: .75rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-item b {
+  font-weight: 600;
+  color: var(--text);
+  font-size: .82rem;
+  letter-spacing: .02em;
+}
+
+.hud-item.status { margin-left: auto; }
+.hud-item.status b { font-size: .75rem; }
+.hud-item.status.is-almost b { color: var(--accent); }
+.hud-item.status.is-won b { color: var(--valid); }
+
+/* ---------- 进度 ---------- */
+.progress {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.progress i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: var(--valid);
+  transition: width .35s cubic-bezier(.2, .8, .3, 1);
+}
+
+/* ---------- 棋盘 ---------- */
+.stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+}
+
+/* 绝对定位：棋盘尺寸不会反过来影响 stage 的高度，避免量测反馈循环 */
+.board-card {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: max-content;
+  height: max-content;
+  padding: 5px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+  line-height: 0;
+}
+
+canvas {
+  display: block;
+  border-radius: 14px;
+  touch-action: none;
+  cursor: pointer;
+  background: var(--board-bg);
+}
+
+.stage-note {
+  background: var(--surface);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: .82rem;
+  color: var(--muted);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(2px);
+  transition: opacity .2s ease;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.stage-note.show { opacity: 1; }
+
+/* ---------- 底部工具栏 ---------- */
+.toolbar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.tool {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: var(--radius-md);
+  padding: 7px 6px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font: inherit;
+  font-size: .72rem;
+  cursor: pointer;
+  transition: transform .16s ease, border-color .16s ease, background .16s ease;
+}
+
+.tool svg { width: 19px; height: 19px; opacity: .85; }
+.tool:hover { border-color: var(--line-strong); }
+.tool:active { transform: translateY(1px) scale(.99); }
+.tool:disabled { opacity: .38; cursor: default; }
+
+.tool.primary {
+  background: var(--text);
+  color: var(--surface);
+  border-color: transparent;
+}
+
+.tool.primary svg { opacity: 1; }
+
+/* ---------- 提示条 ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 88px;
+  transform: translate(-50%, 12px);
+  max-width: min(560px, calc(100vw - 40px));
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: rgba(28, 34, 38, .94);
+  color: #f2f5f6;
+  font-size: .8rem;
+  line-height: 1.4;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .22s ease, transform .22s ease;
+  z-index: 40;
+}
+
+[data-theme="dark"] .toast { background: rgba(238, 242, 244, .94); color: #1a2024; }
+
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- 弹层 ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  place-items: center;
+  padding: 22px;
+  background: rgba(20, 28, 33, .38);
+  backdrop-filter: blur(6px);
+  z-index: 60;
+}
+
+.overlay.show { display: grid; }
+
+.dialog {
+  width: min(420px, 100%);
+  max-height: min(88dvh, 760px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--surface);
+  border-radius: 22px;
+  padding: 26px 24px 20px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--line);
+  animation: pop .28s cubic-bezier(.2, .9, .3, 1.1);
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: translateY(14px) scale(.97); }
+  to { opacity: 1; transform: none; }
+}
+
+.dialog .eyebrow {
+  margin: 0 0 6px;
+  font-size: .68rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.dialog h2 {
+  margin: 0 0 6px;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Songti SC", Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+
+.dialog p.lede { margin: 0; color: var(--muted); font-size: .86rem; line-height: 1.6; }
+
+.win-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 18px 0 20px;
+}
+
+.win-stats div {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.win-stats span {
+  display: block;
+  font-size: .66rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.win-stats b { font-size: 1.02rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.record-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+
+.dialog-actions { display: flex; gap: 8px; }
+
+.btn {
+  flex: 1;
+  appearance: none;
+  font: inherit;
+  font-size: .84rem;
+  padding: 11px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease;
+}
+
+.btn:hover { background: var(--surface-soft); }
+.btn:active { transform: scale(.985); }
+
+.btn.solid {
+  background: var(--text);
+  color: var(--surface);
+  border-color: transparent;
+}
+
+.btn.solid:hover { background: color-mix(in srgb, var(--text) 88%, var(--surface)); }
+
+.rules { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+
+.rules li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 10px;
+  font-size: .84rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.rules li em {
+  font-style: normal;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  font-size: .68rem;
+  color: var(--muted);
+}
+
+.rules li span { color: var(--muted); }
+.rules li b { display: block; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+
+.tips {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+  font-size: .76rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.tips kbd {
+  font: inherit;
+  font-size: .7rem;
+  padding: 1px 5px;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  background: var(--surface-soft);
+  color: var(--text);
+}
+
+/* ---------- 设置抽屉 ---------- */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 26, 31, .38);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+  z-index: 70;
+}
+
+.drawer-backdrop.show { opacity: 1; pointer-events: auto; }
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(360px, 92vw);
+  background: var(--surface);
+  border-left: 1px solid var(--line);
+  box-shadow: -24px 0 60px -40px rgba(20, 34, 42, .8);
+  transform: translateX(102%);
+  transition: transform .28s cubic-bezier(.22, .8, .3, 1);
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px calc(20px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.drawer.open { transform: translateX(0); }
+
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.drawer-head h2 {
+  margin: 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Songti SC", Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+}
+
+.drawer-section { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.drawer-section:last-of-type { border-bottom: 0; }
+
+.segmented {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface-soft);
+}
+
+.seg {
+  flex: 1;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: .8rem;
+  padding: 7px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease;
+}
+
+.seg:hover:not(.is-active) { color: var(--text); background: rgba(127, 127, 127, .1); }
+
+.seg.is-active {
+  background: var(--text);
+  color: var(--surface);
+  font-weight: 600;
+}
+
+.size-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.size-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: .7rem;
+  color: var(--muted);
+}
+
+.size-field input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--surface-soft);
+  color: var(--text);
+  font: inherit;
+  font-size: .9rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.size-field input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.size-times { padding-bottom: 9px; color: var(--muted); font-size: .8rem; }
+
+.row-btn.apply { text-align: center; font-weight: 600; }
+
+.size-error {
+  margin: 6px 2px 0;
+  font-size: .74rem;
+  line-height: 1.5;
+  color: var(--invalid);
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity .2s ease, max-height .2s ease;
+}
+
+.size-error.show { opacity: 1; max-height: 48px; }
+
+.drawer-section h3 {
+  margin: 0 0 10px;
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.level-list { display: grid; gap: 6px; }
+
+.level-row {
+  appearance: none;
+  font: inherit;
+  text-align: left;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "name best" "meta best";
+  gap: 2px 10px;
+  align-items: center;
+  padding: 9px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color .16s ease, background .16s ease;
+}
+
+.level-row:hover { background: var(--surface-soft); }
+
+.level-row.is-active {
+  border-color: var(--text);
+  background: var(--surface-soft);
+}
+
+.level-row .name { grid-area: name; font-size: .86rem; font-weight: 600; letter-spacing: .02em; }
+.level-row .meta { grid-area: meta; font-size: .7rem; color: var(--muted); }
+.level-row .best {
+  grid-area: best;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 76px;
+  font-size: .8rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  text-align: right;
+}
+
+.level-row .best small {
+  font-size: .6rem;
+  letter-spacing: .1em;
+  color: var(--muted);
+  opacity: .8;
+}
+
+.level-row .best b { font-weight: 600; color: var(--text); }
+.level-row .best b.is-empty { color: var(--muted); font-weight: 500; }
+.level-row.is-active .best b:not(.is-empty) { color: var(--valid); }
+.level-row .warn { color: var(--accent); font-size: .66rem; margin-left: 6px; }
+
+.drawer-hint {
+  margin: 8px 2px 0;
+  font-size: .72rem;
+  line-height: 1.6;
+  color: var(--muted);
+  min-height: 1em;
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 2px;
+  font-size: .86rem;
+  cursor: pointer;
+}
+
+.switch-row > span { flex: 1; }
+
+.switch-row input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.switch {
+  width: 40px;
+  height: 23px;
+  border-radius: 999px;
+  background: var(--line-strong);
+  position: relative;
+  transition: background .2s ease;
+  flex: 0 0 auto;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .25);
+  transition: transform .2s ease;
+}
+
+.switch-row input:checked + .switch { background: var(--valid); }
+.switch-row input:checked + .switch::after { transform: translateX(17px); }
+.switch-row input:focus-visible + .switch { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.row-btn {
+  appearance: none;
+  font: inherit;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  font-size: .86rem;
+  cursor: pointer;
+  transition: background .16s ease;
+}
+
+.row-btn:hover { background: var(--surface-soft); }
+.row-btn.danger { color: var(--invalid); }
+
+.drawer-foot .version {
+  display: block;
+  margin-top: 6px;
+  font-size: .64rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  opacity: .7;
+}
+
+.drawer-foot {
+  margin: auto 0 0;
+  padding-top: 14px;
+  font-size: .7rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- 移动端 ---------- */
+@media (max-width: 620px) {
+  .app { padding: 6px 6px 6px; gap: 5px; }
+  .brand h1 { font-size: 1.05rem; }
+  .brand p { display: none; }
+  .level-btn { padding: 6px 11px; }
+  .level-btn span { font-size: .76rem; }
+  .hud-item { padding: 3px 8px; font-size: .7rem; }
+  .hud-item b { font-size: .78rem; }
+  .tool span { font-size: .66rem; }
+  .tool { padding: 6px 4px 5px; }
+  .toolbar { gap: 5px; }
+  .board-card { padding: 4px; }
+  .toast { bottom: 76px; }
+}
+
+/* 横屏手机：棋盘在左，信息与操作竖排在右 */
+@media (max-height: 560px) and (min-width: 640px) {
+  .app {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 190px;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas:
+      "top top"
+      "hud hud"
+      "stage toolbar";
+    gap: 6px 12px;
+    padding: 8px 14px 10px;
+  }
+  .topbar { grid-area: top; }
+  .hud { grid-area: hud; }
+  .progress { display: none; }
+  .brand p { display: none; }
+  .brand h1 { font-size: 1rem; }
+  .stage { grid-area: stage; }
+  .toolbar {
+    grid-area: toolbar;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    align-content: end;
+  }
+  .tool {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 7px 10px;
+    font-size: .76rem;
+  }
+  .tool svg { width: 16px; height: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <h1>橋をかけろ</h1>
+      <p>Hashi · Bridges</p>
+    </div>
+    <button class="level-btn" id="btn-level" type="button" aria-label="切换难度与算法">
+      <span id="level-name">Medium</span>
+      <small id="level-meta">11×11 · 经典</small>
+    </button>
+    <button class="icon-btn" id="btn-fullscreen" type="button" aria-label="进入全屏" aria-pressed="false"></button>
+    <button class="icon-btn" id="btn-settings" type="button" aria-label="设置" aria-haspopup="dialog"></button>
+  </header>
+
+  <div class="hud">
+    <span class="hud-item">时间 <b id="time">00:00</b></span>
+    <span class="hud-item">步数 <b id="moves">0</b></span>
+    <span class="hud-item">最佳 <b id="best-time">—</b></span>
+    <span class="hud-item status" id="status-item"><b id="status">进行中</b></span>
+  </div>
+
+  <div class="progress" aria-hidden="true"><i id="progress"></i></div>
+
+  <main class="stage" id="stage">
+    <div class="board-card">
+      <canvas id="board" role="img" aria-label="Hashi 棋盘"></canvas>
+    </div>
+    <div class="stage-note" id="stage-note">正在生成谜题…</div>
+  </main>
+
+  <footer class="toolbar">
+    <button class="tool" id="btn-undo" type="button" aria-label="撤销">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7 4.5 11.5 9 16"/><path d="M4.5 11.5H14a5.5 5.5 0 0 1 0 11h-1.5"/></svg>
+      <span>撤销</span>
+    </button>
+    <button class="tool" id="btn-redo" type="button" aria-label="重做">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 7 4.5 4.5L15 16"/><path d="M19.5 11.5H10a5.5 5.5 0 0 0 0 11h1.5"/></svg>
+      <span>重做</span>
+    </button>
+    <button class="tool" id="btn-hint" type="button" aria-label="提示">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17h6"/><path d="M10 20h4"/><path d="M12 3a6 6 0 0 1 3.5 10.9c-.6.5-1 1.2-1 2.1h-5c0-.9-.4-1.6-1-2.1A6 6 0 0 1 12 3Z"/></svg>
+      <span>提示</span>
+    </button>
+    <button class="tool" id="btn-restart" type="button" aria-label="重开">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.6-5.9"/><path d="M4 4v4.5h4.5"/></svg>
+      <span>重开</span>
+    </button>
+    <button class="tool primary" id="btn-new" type="button" aria-label="新的一局">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      <span>新局</span>
+    </button>
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- 设置抽屉 -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="设置" aria-hidden="true">
+  <div class="drawer-head">
+    <h2>设置</h2>
+    <button class="icon-btn" id="btn-drawer-close" type="button" aria-label="关闭设置">✕</button>
+  </div>
+
+  <section class="drawer-section">
+    <h3>生成算法</h3>
+    <div class="segmented" id="algo-group" role="radiogroup" aria-label="生成算法">
+      <button class="seg is-active" type="button" role="radio" aria-checked="true" data-algo="classic">经典</button>
+      <button class="seg" type="button" role="radio" aria-checked="false" data-algo="apk">APK 复刻</button>
+    </div>
+    <p class="drawer-hint" id="algo-hint"></p>
+  </section>
+
+  <section class="drawer-section">
+    <h3>难度</h3>
+    <div class="level-list" id="level-list"></div>
+    <p class="drawer-hint" id="level-hint"></p>
+  </section>
+
+  <section class="drawer-section">
+    <h3>自定义尺寸</h3>
+    <div class="size-row">
+      <label class="size-field">宽（列）
+        <input type="number" id="size-cols" min="5" max="18" step="1" inputmode="numeric" aria-label="宽度（列数）">
+      </label>
+      <span class="size-times">×</span>
+      <label class="size-field">高（行）
+        <input type="number" id="size-rows" min="5" max="18" step="1" inputmode="numeric" aria-label="高度（行数）">
+      </label>
+    </div>
+    <button class="row-btn apply" id="btn-apply-size" type="button">应用自定义尺寸</button>
+    <p class="size-error" id="size-error" role="alert"></p>
+    <p class="drawer-hint" id="size-hint"></p>
+  </section>
+
+  <section class="drawer-section">
+    <h3>偏好</h3>
+    <label class="switch-row">
+      <span>音效</span>
+      <input type="checkbox" id="opt-sound" checked>
+      <i class="switch" aria-hidden="true"></i>
+    </label>
+    <label class="switch-row">
+      <span>夜间模式</span>
+      <input type="checkbox" id="opt-theme">
+      <i class="switch" aria-hidden="true"></i>
+    </label>
+  </section>
+
+  <section class="drawer-section">
+    <h3>其他</h3>
+    <button class="row-btn" id="btn-help" type="button">玩法说明</button>
+    <button class="row-btn" id="btn-clear-bests" type="button">清空最佳成绩</button>
+  </section>
+
+  <p class="drawer-foot">点岛选中，再点同线另一岛建桥；点桥可拆除。<br>拖拽也能架桥。快捷键 U / R / N / H / F。
+    <span class="version" id="app-version">v0.1.1</span>
+  </p>
+</aside>
+
+<div class="overlay" id="overlay">
+  <div class="dialog" id="dialog" role="dialog" aria-modal="true"></div>
+</div>
+
+<script>
+/* Hashi 引擎：谜题生成 + 求解器 + 局面判定
+ * 生成范式：先构造合法解（生成树 + 冗余边 + 双桥）→ 赋数字 → 移除桥 → 求解器验证唯一解
+ * 参考公开实现思路：erthium/hashiwokakero（构造-验证 + 规则优先搜索）
+ */
+(function (global) {
+  'use strict';
+
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function shuffle(arr, rng) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = (rng() * (i + 1)) | 0;
+      const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  /* ---------- 1. 岛屿布点 ---------- */
+  // 自由生长布点：首岛随机落在棋盘任意格，之后每次挑一座已有岛，沿它的行或列
+  // 在 2–6 格外放新岛（路径无岛/桥、落点四邻无岛）。每次生长都自带一条候选边，
+  // 候选图天然连通；生长路径标记为“桥体”，避免后续生长与之交叉。
+  // 不对边界、行列覆盖做任何强制，位置完全由随机生长决定。
+  function placeIslands(rows, cols, count, rng) {
+    const total = rows * cols;
+    if (count > total) count = total;
+
+    const occ = new Uint8Array(total); // 0 空 / 1 岛 / 2 桥体
+    const islands = [];
+    const at = (r, c) => r * cols + c;
+
+    const freeIsland = (r, c) => {
+      if (r < 0 || c < 0 || r >= rows || c >= cols) return false;
+      if (occ[at(r, c)]) return false;
+      if (r > 0 && occ[at(r - 1, c)] === 1) return false;
+      if (r < rows - 1 && occ[at(r + 1, c)] === 1) return false;
+      if (c > 0 && occ[at(r, c - 1)] === 1) return false;
+      if (c < cols - 1 && occ[at(r, c + 1)] === 1) return false;
+      return true;
+    };
+    const put = (r, c) => {
+      occ[at(r, c)] = 1;
+      islands.push({ id: islands.length, r, c, clue: 0 });
+    };
+    const grow = (base, dr, dc, maxLen) => {
+      for (let len = maxLen; len >= 2; len--) {
+        const r = base.r + dr * len, c = base.c + dc * len;
+        if (!freeIsland(r, c)) continue;
+        let clear = true;
+        for (let k = 1; k < len; k++) if (occ[at(base.r + dr * k, base.c + dc * k)]) { clear = false; break; }
+        if (!clear) continue;
+        for (let k = 1; k < len; k++) occ[at(base.r + dr * k, base.c + dc * k)] = 2;
+        put(r, c);
+        return true;
+      }
+      return false;
+    };
+
+    const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+    put(Math.floor(rng() * rows), Math.floor(rng() * cols));
+
+    let guard = 0;
+    while (islands.length < count && guard++ < count * 400) {
+      const base = islands[Math.floor(rng() * islands.length)];
+      const order = shuffle(dirs.slice(), rng);
+      for (const [dr, dc] of order) {
+        const span = dr ? rows : cols;
+        const maxLen = Math.min(6, span - 1);
+        if (maxLen < 2) continue;
+        if (grow(base, dr, dc, maxLen)) break;
+      }
+    }
+
+    return islands.length === count ? islands : [];
+  }
+
+  /* ---------- 2. 候选桥（同行/同列、中间无岛） ---------- */
+  function buildEdges(islands, rows, cols) {
+    const edges = [];
+    const byRow = new Map();
+    const byCol = new Map();
+    for (const isl of islands) {
+      if (!byRow.has(isl.r)) byRow.set(isl.r, []);
+      byRow.get(isl.r).push(isl);
+      if (!byCol.has(isl.c)) byCol.set(isl.c, []);
+      byCol.get(isl.c).push(isl);
+    }
+
+    const pushPair = (a, b, horizontal) => {
+      const cells = [];
+      if (horizontal) {
+        const lo = Math.min(a.c, b.c), hi = Math.max(a.c, b.c);
+        for (let c = lo + 1; c < hi; c++) cells.push(a.r * cols + c);
+      } else {
+        const lo = Math.min(a.r, b.r), hi = Math.max(a.r, b.r);
+        for (let r = lo + 1; r < hi; r++) cells.push(r * cols + a.c);
+      }
+      edges.push({ a: Math.min(a.id, b.id), b: Math.max(a.id, b.id), cells, cross: [], horizontal });
+    };
+
+    for (const list of byRow.values()) {
+      list.sort((x, y) => x.c - y.c);
+      for (let i = 0; i + 1 < list.length; i++) pushPair(list[i], list[i + 1], true);
+    }
+    for (const list of byCol.values()) {
+      list.sort((x, y) => x.r - y.r);
+      for (let i = 0; i + 1 < list.length; i++) pushPair(list[i], list[i + 1], false);
+    }
+
+    // 交叉冲突：水平桥与垂直桥共用空格即相交
+    const cellOwner = new Map();
+    edges.forEach((e, idx) => {
+      if (!e.horizontal) return;
+      for (const cell of e.cells) {
+        if (!cellOwner.has(cell)) cellOwner.set(cell, []);
+        cellOwner.get(cell).push(idx);
+      }
+    });
+    edges.forEach((e, idx) => {
+      if (e.horizontal) return;
+      for (const cell of e.cells) {
+        const owners = cellOwner.get(cell);
+        if (!owners) continue;
+        for (const other of owners) {
+          if (!e.cross.includes(other)) e.cross.push(other);
+          if (!edges[other].cross.includes(idx)) edges[other].cross.push(idx);
+        }
+      }
+    });
+
+    return edges;
+  }
+
+  /* ---------- 3. 构造一个合法解 ---------- */
+  function buildSolution(islands, edges, rng, opts) {
+    const n = islands.length;
+    const m = edges.length;
+    const val = new Uint8Array(m);      // 0 / 1 / 2
+    const deg = new Uint8Array(n);
+    const picked = new Uint8Array(m);
+
+    const order = [];
+    for (let i = 0; i < m; i++) order.push(i);
+    shuffle(order, rng);
+
+    const parent = new Int32Array(n);
+    for (let i = 0; i < n; i++) parent[i] = i;
+    const find = (x) => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+
+    const crossesPicked = (idx) => {
+      for (const c of edges[idx].cross) if (picked[c]) return true;
+      return false;
+    };
+
+    let treeCount = 0;
+    for (const idx of order) {
+      if (treeCount === n - 1) break;
+      const e = edges[idx];
+      if (find(e.a) === find(e.b)) continue;
+      if (crossesPicked(idx)) continue;
+      const ra = find(e.a), rb = find(e.b);
+      parent[ra] = rb;
+      picked[idx] = 1; val[idx] = 1; deg[e.a]++; deg[e.b]++;
+      treeCount++;
+    }
+    if (treeCount !== n - 1) return null;
+
+    // 冗余边：增加环与分支，提升题面约束
+    const extraRate = opts.extraRate;
+    for (const idx of order) {
+      if (picked[idx]) continue;
+      if (rng() > extraRate) continue;
+      const e = edges[idx];
+      if (crossesPicked(idx)) continue;
+      if (deg[e.a] >= opts.maxDeg || deg[e.b] >= opts.maxDeg) continue;
+      picked[idx] = 1; val[idx] = 1; deg[e.a]++; deg[e.b]++;
+    }
+
+    // 双桥
+    const pairs = [];
+    for (let i = 0; i < m; i++) if (picked[i]) pairs.push(i);
+    shuffle(pairs, rng);
+    for (const idx of pairs) {
+      if (rng() > opts.doubleRate) continue;
+      const e = edges[idx];
+      if (deg[e.a] + 1 > 8 || deg[e.b] + 1 > 8) continue;
+      val[idx] = 2; deg[e.a]++; deg[e.b]++;
+    }
+
+    for (let i = 0; i < n; i++) {
+      if (deg[i] < 1 || deg[i] > 8) return null;
+      islands[i].clue = deg[i];
+    }
+
+    return { val, islands };
+  }
+
+  /* ---------- 4. 求解器（规则传播 + 回溯，计数解） ---------- */
+  function makeSolver(puzzle) {
+    const islands = puzzle.islands;
+    const edges = puzzle.edges;
+    const n = islands.length, m = edges.length;
+    const clue = new Int32Array(n);
+    for (let i = 0; i < n; i++) clue[i] = islands[i].clue;
+
+    const inc = [];
+    for (let i = 0; i < n; i++) inc.push([]);
+    for (let i = 0; i < m; i++) { inc[edges[i].a].push(i); inc[edges[i].b].push(i); }
+
+    const state = new Int8Array(m).fill(-1);
+    const trail = [];
+    let branches = 0;
+    let solutions = 0;
+    let propRounds = 0;
+    let first = null;
+    const all = [];
+    let limit = 2;
+
+    function setEdge(idx, v) {
+      const cur = state[idx];
+      if (cur === v) return true;
+      if (cur !== -1) return false;
+      state[idx] = v;
+      trail.push(idx);
+      if (v > 0) {
+        const cross = edges[idx].cross;
+        for (let k = 0; k < cross.length; k++) {
+          if (!setEdge(cross[k], 0)) return false;
+        }
+      }
+      return true;
+    }
+
+    function truncate(len) {
+      while (trail.length > len) {
+        state[trail.pop()] = -1;
+      }
+    }
+
+    function islandStats(i, out) {
+      let assigned = 0, open = 0;
+      const list = inc[i];
+      for (let k = 0; k < list.length; k++) {
+        const v = state[list[k]];
+        if (v < 0) open++; else assigned += v;
+      }
+      out.assigned = assigned; out.open = open;
+    }
+
+    const stats = { assigned: 0, open: 0 };
+
+    function propagate() {
+      let changed = true;
+      while (changed) {
+        changed = false;
+        propRounds++;
+        for (let i = 0; i < n; i++) {
+          islandStats(i, stats);
+          const need = clue[i] - stats.assigned;
+          if (need < 0) return false;
+          const cap = 2 * stats.open;
+          if (need > cap) return false;
+          if (stats.open === 0) continue;
+          if (need === 0) {
+            for (const ei of inc[i]) if (state[ei] < 0) { if (!setEdge(ei, 0)) return false; changed = true; }
+          } else if (need === cap) {
+            for (const ei of inc[i]) if (state[ei] < 0) { if (!setEdge(ei, 2)) return false; changed = true; }
+          } else if (stats.open === 1) {
+            for (const ei of inc[i]) if (state[ei] < 0) { if (!setEdge(ei, need)) return false; changed = true; }
+          }
+        }
+      }
+      return true;
+    }
+
+    // 连通性剪枝：已连成一片的岛若再无可能接出去，则不可能全连通
+    function componentsFeasible() {
+      const parent = new Int32Array(n);
+      for (let i = 0; i < n; i++) parent[i] = i;
+      const find = (x) => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+      for (let i = 0; i < m; i++) {
+        if (state[i] > 0) {
+          const ra = find(edges[i].a), rb = find(edges[i].b);
+          if (ra !== rb) parent[ra] = rb;
+        }
+      }
+      const comp = new Map();
+      for (let i = 0; i < n; i++) {
+        const root = find(i);
+        if (!comp.has(root)) comp.set(root, []);
+        comp.get(root).push(i);
+      }
+      if (comp.size === 1) return true;
+      for (const members of comp.values()) {
+        const inComp = new Set(members);
+        let escape = false;
+        for (const i of members) {
+          for (const ei of inc[i]) {
+            if (state[ei] >= 0) continue;
+            const e = edges[ei];
+            const other = e.a === i ? e.b : e.a;
+            if (!inComp.has(other)) { escape = true; break; }
+          }
+          if (escape) break;
+        }
+        if (!escape) return false;
+      }
+      return true;
+    }
+
+    function connected() {
+      const parent = new Int32Array(n);
+      for (let i = 0; i < n; i++) parent[i] = i;
+      const find = (x) => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+      for (let i = 0; i < m; i++) {
+        if (state[i] > 0) {
+          const ra = find(edges[i].a), rb = find(edges[i].b);
+          if (ra !== rb) parent[ra] = rb;
+        }
+      }
+      const root = find(0);
+      for (let i = 1; i < n; i++) if (find(i) !== root) return false;
+      return true;
+    }
+
+    function domain(i, exceptIdx, out) {
+      islandStats(i, stats);
+      const need = clue[i] - stats.assigned;
+      const open = stats.open - (state[exceptIdx] < 0 ? 1 : 0);
+      out.lo = Math.max(0, need - 2 * open);
+      out.hi = Math.min(2, need);
+    }
+
+    const da = { lo: 0, hi: 0 }, db = { lo: 0, hi: 0 };
+
+    function search() {
+      if (solutions >= limit) return;
+      if (!propagate()) return;
+      if (!componentsFeasible()) return;
+
+      let best = -1, bestSize = 4, bestLo = 0;
+      for (let i = 0; i < m; i++) {
+        if (state[i] >= 0) continue;
+        const e = edges[i];
+        domain(e.a, i, da);
+        domain(e.b, i, db);
+        const lo = Math.max(da.lo, db.lo);
+        const hi = Math.min(da.hi, db.hi);
+        if (lo > hi) return;
+        const size = hi - lo + 1;
+        if (size < bestSize) { bestSize = size; best = i; bestLo = lo; if (size === 1) break; }
+      }
+
+      if (best === -1) {
+        if (connected()) {
+          solutions++;
+          all.push(Array.from(state));
+          if (solutions === 1) first = state.slice();
+        }
+        return;
+      }
+
+      branches++;
+      const values = [];
+      for (let v = bestLo; v <= Math.min(2, bestLo + bestSize - 1); v++) values.push(v);
+      if (values.length > 1) values.sort((x, y) => Math.abs(x - 1) - Math.abs(y - 1));
+      for (const v of values) {
+        const mark = trail.length;
+        if (setEdge(best, v)) search();
+        truncate(mark);
+        if (solutions >= limit) return;
+      }
+    }
+
+    return {
+      run(maxSolutions) {
+        limit = maxSolutions || 2;
+        solutions = 0; branches = 0; first = null; all.length = 0;
+
+        // 逻辑预演：只做约束传播，记录“纯逻辑能推出多少桥、推了几轮”
+        const mark = trail.length;
+        propRounds = 0;
+        const logicOk = propagate();
+        let fixed = 0;
+        for (let i = 0; i < state.length; i++) if (state[i] >= 0) fixed++;
+        const logic = { fixed, total: state.length, rounds: propRounds, ok: logicOk };
+        truncate(mark);
+        propRounds = 0;
+
+        search();
+        return {
+          count: solutions,
+          branches,
+          solution: first ? Array.from(first) : null,
+          all,
+          logic,
+          solvableByLogic: branches === 0 && solutions > 0
+        };
+      }
+    };
+  }
+
+  /* ---------- 5. 生成入口 ---------- */
+  /* 五档尺寸对齐 APK（竖屏口径，宽×高 = 6×9 / 8×12 / 10×15 / 13×18 / 15×22）。
+   * 这里用 rows/cols 表示：rows = 高，cols = 宽。桌面端由 game.js 旋转 90° 使用。 */
+  const LEVELS = {
+    mini:    { key: 'mini',    label: 'Mini',    rows: 9,  cols: 6,  islands: [9, 13],  targetBranches: 2,  tolerance: 2, extraRate: 0, doubleRate: 0.24, maxDeg: 8 },
+    small:   { key: 'small',   label: 'Small',   rows: 12, cols: 8,  islands: [13, 18], targetBranches: 4,  tolerance: 2, extraRate: 0, doubleRate: 0.24, maxDeg: 8 },
+    medium:  { key: 'medium',  label: 'Medium',  rows: 15, cols: 10, islands: [18, 25], targetBranches: 7,  tolerance: 3, extraRate: 0, doubleRate: 0.24, maxDeg: 8 },
+    large:   { key: 'large',   label: 'Large',   rows: 18, cols: 13, islands: [23, 31], targetBranches: 12, tolerance: 4, extraRate: 0, doubleRate: 0.16, maxDeg: 8 },
+    massive: { key: 'massive', label: 'Massive', rows: 22, cols: 15, islands: [30, 40], targetBranches: 18, tolerance: 5, extraRate: 0, doubleRate: 0.16, maxDeg: 8 }
+  };
+
+  /** 允许传档位名，或直接传一份配置（自定义尺寸时使用） */
+  function resolveConfig(level) {
+    if (typeof level === 'string') return LEVELS[level] || LEVELS.medium;
+    return Object.assign({}, LEVELS.medium, level || {});
+  }
+
+  /**
+   * 自定义尺寸的推参：保持与内置档位相同的岛屿密度手感。
+   * 边长 ≥13 时把格距放到 3 格，避免格子过密；岛屿数按格点占用率取。
+   */
+  function customConfig(rows, cols) {
+    const area = rows * cols;
+    // 面积越大，岛屿密度越低（与五档预设的手感一致）
+    const density = area <= 80 ? 0.185 : area <= 160 ? 0.15 : area <= 260 ? 0.12 : 0.10;
+    const base = Math.max(6, Math.round(area * density));
+    return {
+      key: 'custom',
+      label: 'Custom',
+      rows, cols,
+      islands: [Math.max(6, base - 3), base + 4],
+      targetBranches: Math.max(2, Math.round(base * 0.5)),
+      tolerance: 4,
+      extraRate: 0,
+      doubleRate: area >= 200 ? 0.16 : 0.24,
+      maxDeg: 8
+    };
+  }
+
+  function makePuzzle(level, rng, override) {
+    const cfg = Object.assign({}, resolveConfig(level), override || {});
+    const rows = cfg.rows, cols = cfg.cols;
+    const count = Array.isArray(cfg.islands) ? cfg.islands[0] : cfg.islands;
+    const islands = placeIslands(rows, cols, count, rng);
+    if (islands.length < 6) return null;
+
+    const edges = buildEdges(islands, rows, cols);
+    if (edges.length < islands.length) return null;
+
+    const built = buildSolution(islands, edges, rng, cfg);
+    if (!built) return null;
+
+    return {
+      level: cfg.key,
+      rows, cols,
+      islands: islands.map(x => ({ id: x.id, r: x.r, c: x.c, clue: x.clue })),
+      edges,
+      solution: Array.from(built.val),
+      attempts: 1
+    };
+  }
+
+  /**
+   * 确定性生成：同一 seed + level 必得同一谜题。
+   * 过程：反复构造 -> 求解器计数，只接受恰好 1 个解。
+   * 若长时间未命中，逐步降低双桥率以提升命中率（双桥越多越容易产生多解）。
+   */
+  /**
+   * 生成：岛屿数量在一个区间内随机取值，最终以「求解器回溯分支数」作为推理难度标尺，
+   * 挑选落在该档目标难度带内的题面；若始终未命中，返回最接近目标的那一局。
+   * 同一 seed 结果可复现（确定性随机数）。
+   */
+  function generate(level, seed, opts) {
+    const options = opts || {};
+    const cfg = resolveConfig(level);
+    const range = Array.isArray(cfg.islands) ? cfg.islands : [cfg.islands, cfg.islands];
+    const target = cfg.targetBranches || Math.max(2, Math.round((range[0] + range[1]) * 0.25));
+    const tol = cfg.tolerance || 3;
+    const maxTries = options.maxAttempts || 240;
+    const rng = mulberry32(seed);
+
+    let best = null;
+    let bestDelta = Infinity;
+
+    for (let i = 0; i < maxTries; i++) {
+      const n = range[0] + Math.floor(rng() * (range[1] - range[0] + 1));
+      const phase = i / maxTries;
+      const doubleRate = phase < 0.7 ? cfg.doubleRate : cfg.doubleRate * 0.4;
+      const p = makePuzzle(cfg, rng, { islands: n, doubleRate });
+      if (!p) continue;
+
+      const res = makeSolver(p).run(2);
+      if (res.count !== 1) continue;
+
+      p.attempts = i + 1;
+      p.branches = res.branches;
+      p.difficulty = res.branches;
+      p.solution = res.solution;
+
+      const delta = Math.abs(res.branches - target);
+      if (delta < bestDelta) { best = p; bestDelta = delta; }
+      if (delta <= tol) return p;
+    }
+    return best;
+  }
+
+  /* ---------- 6. 局面判定 ---------- */
+  function analyze(puzzle, bridges) {
+    const n = puzzle.islands.length;
+    const sum = new Int32Array(n);
+    const parent = new Int32Array(n);
+    for (let i = 0; i < n; i++) parent[i] = i;
+    const find = (x) => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+
+    let totalBridges = 0;
+    for (let i = 0; i < puzzle.edges.length; i++) {
+      const v = bridges[i] || 0;
+      if (!v) continue;
+      const e = puzzle.edges[i];
+      sum[e.a] += v; sum[e.b] += v;
+      totalBridges += v;
+      const ra = find(e.a), rb = find(e.b);
+      if (ra !== rb) parent[ra] = rb;
+    }
+
+    const over = [], done = [];
+    let allDone = true;
+    for (let i = 0; i < n; i++) {
+      if (sum[i] > puzzle.islands[i].clue) over.push(i);
+      if (sum[i] === puzzle.islands[i].clue) done.push(i);
+      else allDone = false;
+    }
+
+    let connected = true;
+    if (n > 1) {
+      const root = find(0);
+      for (let i = 1; i < n; i++) if (find(i) !== root) { connected = false; break; }
+    }
+
+    return {
+      sum, over, done, allDone, connected, totalBridges,
+      solved: allDone && connected,
+      almost: allDone && !connected
+    };
+  }
+
+  const api = { mulberry32, generate, makePuzzle, makeSolver, buildEdges, buildSolution, placeIslands, analyze, customConfig, resolveConfig, LEVELS };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  global.Hashi = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* Hashi 引擎 · APK 复刻生成器
+ * ----------------------------------------------------------------------------
+ * 把 reference/apk-table-generator.js 里的算法接入游戏：输入尺寸与种子，
+ * 输出与 engine.js 完全一致的谜题结构（islands / edges / solution），
+ * 供 game.js 直接渲染与判定。参考文件本身保持独立、不被引用。
+ *
+ * 算法（对照 APK ch.aorlinn.bridges.generator.TableGenerator）：
+ *   随机起岛 → 反复挑岛/挑方向 → 沿方向找到第一个可落点 → 建岛建桥（权重 1/2 平衡）
+ *   → 用规则求解器判「能否纯逻辑推出」（最多 5 次翻转相邻桥权重）→ 不行整局重来
+ * 因此解恒为树，且候选桥之间可能存在几何交叉（由游戏侧禁止同时成立）。
+ */
+(function (global) {
+  'use strict';
+
+  const Engine = global.Hashi;
+
+  /* 双桥上限与“第三条双桥”的低概率门：
+   * 原版 bridgeWeightRandom 一旦出现双桥就会自我强化，导致 3 方向全双桥（数字 6）
+   * 和 4 方向全双桥（数字 8）偏多。这里改为：
+   *   · 每岛最多 3 条双桥（8 需要 4 条，因此彻底不会出现）；
+   *   · 已经有 2 条双桥时，第三条只有 12% 概率成立 —— 三方向 6 保留但很稀少。 */
+  const MAX_DOUBLES_PER_ISLAND = 3;
+  const THIRD_DOUBLE_CHANCE = 0.12;
+
+  const DIRS = [
+    { name: 'LEFT', dx: -1, dy: 0, vertical: false },
+    { name: 'TOP', dx: 0, dy: -1, vertical: true },
+    { name: 'RIGHT', dx: 1, dy: 0, vertical: false },
+    { name: 'BOTTOM', dx: 0, dy: 1, vertical: true }
+  ];
+  const otherAxis = (dir) => (dir.vertical ? DIRS.filter(d => !d.vertical) : DIRS.filter(d => d.vertical));
+
+  class Rng {
+    constructor(seed) { this.s = (seed >>> 0) || 0x9e3779b9; }
+    next() {
+      let x = this.s;
+      x ^= x << 13; x >>>= 0;
+      x ^= x >>> 17;
+      x ^= x << 5; x >>>= 0;
+      this.s = x;
+      return x / 4294967296;
+    }
+    nextInt(n) { return Math.floor(this.next() * n); }
+  }
+
+  class GIsland {
+    constructor(x, y) { this.x = x; this.y = y; this.bridges = new Map(); }
+    bridgeIn(dir) { return this.bridges.get(dir.name) || null; }
+    allBridges() { return Array.from(this.bridges.values()); }
+    link(bridge) {
+      const other = bridge.other(this);
+      const dir = DIRS.find(d => d.dx === Math.sign(other.x - this.x) && d.dy === Math.sign(other.y - this.y));
+      this.bridges.set(dir.name, bridge);
+    }
+  }
+
+  class GBridge {
+    constructor(a, b) { this.start = a; this.end = b; this.weight = 0; }
+    other(isl) { return isl === this.start ? this.end : this.start; }
+    get horizontal() { return this.start.y === this.end.y; }
+    get minX() { return Math.min(this.start.x, this.end.x); }
+    get maxX() { return Math.max(this.start.x, this.end.x); }
+    get minY() { return Math.min(this.start.y, this.end.y); }
+    get maxY() { return Math.max(this.start.y, this.end.y); }
+  }
+
+  const doubleCount = (island) => island.allBridges().filter(b => b.weight === 2).length;
+
+  /* ---------------- 生成器 ---------------- */
+  class TableGenerator {
+    constructor(width, height, seed) {
+      this.width = width;
+      this.height = height;
+      this.rng = new Rng(seed);
+      this.reset();
+    }
+
+    reset() {
+      this.islands = [];
+      this.bridges = [];
+      this.cells = new Map(); // "x,y" -> Island | Bridge
+    }
+
+    inside(x, y) { return x >= 0 && x < this.width && y >= 0 && y < this.height; }
+
+    addIsland(isl) {
+      this.islands.push(isl);
+      this.cells.set(isl.x + ',' + isl.y, isl);
+    }
+
+    addBridge(b) {
+      this.bridges.push(b);
+      if (b.horizontal) {
+        for (let x = b.minX + 1; x < b.maxX; x++) this.cells.set(x + ',' + b.start.y, b);
+      } else {
+        for (let y = b.minY + 1; y < b.maxY; y++) this.cells.set(b.start.x + ',' + y, b);
+      }
+    }
+
+    canBuildIsland(x, y) {
+      for (const d of DIRS) {
+        const nx = x + d.dx, ny = y + d.dy;
+        if (nx < 0 || nx >= this.width || ny < 0 || ny >= this.height) continue;
+        if (this.cells.get(nx + ',' + ny) instanceof GIsland) return false;
+      }
+      return true;
+    }
+
+    isGridPatternPossible(x, y, dir) {
+      for (const d of otherAxis(dir)) {
+        let nx = x + d.dx, ny = y + d.dy;
+        while (this.inside(nx, ny)) {
+          const cell = this.cells.get(nx + ',' + ny);
+          if (!cell) { nx += d.dx; ny += d.dy; continue; }
+          if (cell instanceof GIsland) return true;
+          break;
+        }
+      }
+      return false;
+    }
+
+    findPossibleConnection(island, dir) {
+      let x = island.x + dir.dx, y = island.y + dir.dy;
+      let fallback = null;
+      while (this.inside(x, y)) {
+        if (this.cells.get(x + ',' + y)) return fallback;
+        if (!this.canBuildIsland(x, y)) { x += dir.dx; y += dir.dy; continue; }
+        if (!fallback) fallback = { x, y };
+        if (!this.isGridPatternPossible(x, y, dir)) return { x, y };
+        x += dir.dx; y += dir.dy;
+      }
+      return fallback;
+    }
+
+    remainingDirections(isl) { return DIRS.filter(d => !isl.bridgeIn(d)); }
+
+    bridgeWeightRandom(island) {
+      let balance = 0;
+      let doubles = 0;
+      for (const b of island.allBridges()) {
+        if (b.weight === 1) balance++;
+        else if (b.weight === 2) { balance--; doubles++; }
+      }
+      if (doubles >= MAX_DOUBLES_PER_ISLAND) return 1;
+      if (doubles === MAX_DOUBLES_PER_ISLAND - 1) {
+        return this.rng.next() < THIRD_DOUBLE_CHANCE ? 2 : 1;
+      }
+      if (balance > 0) return this.rng.nextInt(balance + 4) < 1 ? 2 : 1;
+      if (balance < 0) return this.rng.nextInt(Math.abs(balance) + 4) < 1 ? 1 : 2;
+      return this.rng.nextInt(6) < 1 ? 2 : 1;
+    }
+
+    doCalculation() {
+      const queue = [];
+      const first = new GIsland(this.rng.nextInt(this.width), this.rng.nextInt(this.height));
+      queue.push(first);
+      this.addIsland(first);
+
+      while (queue.length) {
+        const island = queue[this.rng.nextInt(queue.length)];
+        if (island.allBridges().length === 4) { queue.splice(queue.indexOf(island), 1); continue; }
+        const dirs = this.remainingDirections(island);
+        while (dirs.length) {
+          const dir = dirs.splice(this.rng.nextInt(dirs.length), 1)[0];
+          const point = this.findPossibleConnection(island, dir);
+          if (!point) continue;
+          const next = new GIsland(point.x, point.y);
+          queue.push(next);
+          this.addIsland(next);
+          const bridge = new GBridge(island, next);
+          island.link(bridge);
+          next.link(bridge);
+          bridge.weight = this.bridgeWeightRandom(island);
+          this.addBridge(bridge);
+          break;
+        }
+        if (!dirs.length) queue.splice(queue.indexOf(island), 1);
+      }
+    }
+
+    /** 候选桥与数字 → 交给规则求解器判断能否纯逻辑解出 */
+    buildPuzzle() {
+      const islands = this.islands.map((isl, id) => ({ id, r: isl.y, c: isl.x, clue: 0 }));
+      // buildEdges(islands, rows, cols)：rows=height, cols=width
+      const correctEdges = Engine.buildEdges(islands, this.height, this.width);
+      const index = new Map();
+      correctEdges.forEach((e, i) => index.set(e.a + '-' + e.b, i));
+
+      const weights = new Array(correctEdges.length).fill(0);
+      const weightOf = new Map();
+      for (const b of this.bridges) {
+        const a = this.islands.indexOf(b.start);
+        const c = this.islands.indexOf(b.end);
+        const key = Math.min(a, c) + '-' + Math.max(a, c);
+        weightOf.set(key, b.weight);
+        const ei = index.get(key);
+        if (ei === undefined) continue; // 理论不会发生：桥两端必为同行/同列相邻岛
+        weights[ei] = b.weight;
+      }
+
+      const sums = new Array(islands.length).fill(0);
+      correctEdges.forEach((e, i) => {
+        sums[e.a] += weights[i];
+        sums[e.b] += weights[i];
+      });
+      islands.forEach((isl, i) => { isl.clue = sums[i]; });
+
+      return { islands, edges: correctEdges, weights, weightOf };
+    }
+  }
+
+  /* ---------------- 规则求解器（对照 solver/AbstractSolver） ---------------- */
+  class Solver {
+    constructor(puzzle, weightOf) {
+      this.islands = puzzle.islands;
+      this.edges = puzzle.edges;
+      this.weightOf = weightOf;
+      this.state = new Int8Array(this.edges.length).fill(-1);
+      this.inc = this.islands.map(() => []);
+      this.edges.forEach((e, i) => { this.inc[e.a].push(i); this.inc[e.b].push(i); });
+      this.reset();
+    }
+
+    reset() {
+      this.state.fill(-1);
+      this.islands.forEach(isl => {
+        let sum = 0;
+        for (const ei of this.inc[isl.id]) {
+          const e = this.edges[ei];
+          const key = Math.min(e.a, e.b) + '-' + Math.max(e.a, e.b);
+          sum += this.weightOf.get(key) || 0;
+        }
+        isl.clue = sum;
+      });
+    }
+
+    unfixed() {
+      const out = [];
+      for (let i = 0; i < this.state.length; i++) if (this.state[i] < 0) out.push(i);
+      return out;
+    }
+
+    setBridge(i, v) {
+      const cur = this.state[i];
+      if (cur === v) return true;
+      if (cur !== -1) return false;
+      this.state[i] = v;
+      if (v > 0) {
+        for (const ci of this.edges[i].cross) {
+          if (!this.setBridge(ci, 0)) return false;
+        }
+      }
+      return true;
+    }
+
+    stats(isl) {
+      let fixed = 0, open = 0;
+      for (const ei of this.inc[isl.id]) {
+        const v = this.state[ei];
+        if (v < 0) open++; else fixed += v;
+      }
+      return { fixed, open, need: isl.clue - fixed };
+    }
+
+    /** 度数上下界 + 连通块封闭剪枝 */
+    propagate() {
+      let changed = true;
+      while (changed) {
+        changed = false;
+        for (const isl of this.islands) {
+          const { open, need } = this.stats(isl);
+          if (need < 0 || need > 2 * open) return false;
+          if (open === 0) continue;
+          if (need === 0) {
+            for (const ei of this.inc[isl.id]) if (this.state[ei] < 0) { if (!this.setBridge(ei, 0)) return false; changed = true; }
+          } else if (need === 2 * open) {
+            for (const ei of this.inc[isl.id]) if (this.state[ei] < 0) { if (!this.setBridge(ei, 2)) return false; changed = true; }
+          } else if (open === 1) {
+            for (const ei of this.inc[isl.id]) if (this.state[ei] < 0) { if (!this.setBridge(ei, need)) return false; changed = true; }
+          }
+        }
+        if (!this.componentsOpen()) return false;
+      }
+      return true;
+    }
+
+    componentsOpen() {
+      const n = this.islands.length;
+      const parent = new Array(n);
+      for (let i = 0; i < n; i++) parent[i] = i;
+      const find = (x) => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+      this.edges.forEach((e, i) => {
+        if (this.state[i] > 0) {
+          const ra = find(e.a), rb = find(e.b);
+          if (ra !== rb) parent[ra] = rb;
+        }
+      });
+      const groups = new Map();
+      for (let i = 0; i < n; i++) {
+        const root = find(i);
+        if (!groups.has(root)) groups.set(root, []);
+        groups.get(root).push(i);
+      }
+      if (groups.size === 1) return true;
+      for (const members of groups.values()) {
+        const ids = new Set(members);
+        let escape = false;
+        for (const id of members) {
+          for (const ei of this.inc[id]) {
+            if (this.state[ei] !== -1) continue;
+            const e = this.edges[ei];
+            const other = e.a === id ? e.b : e.a;
+            if (!ids.has(other)) { escape = true; break; }
+          }
+          if (escape) break;
+        }
+        if (!escape) return false;
+      }
+      return true;
+    }
+
+    snapshot() { return this.state.slice(); }
+    restore(snap) { this.state.set(snap); }
+
+    /** true = 所有桥都被推出（唯一解） */
+    solve() {
+      if (!this.propagate()) return false;
+      for (let round = 0; round < 40; round++) {
+        const open = this.unfixed();
+        if (!open.length) return true;
+
+        let progress = false;
+        for (const ei of open) {
+          const feasible = [];
+          for (const v of [0, 1, 2]) {
+            const snap = this.snapshot();
+            const ok = this.setBridge(ei, v) && this.propagate();
+            this.restore(snap);
+            if (ok) feasible.push(v);
+          }
+          if (!feasible.length) return false;
+          if (feasible.length === 1) {
+            if (!this.setBridge(ei, feasible[0]) || !this.propagate()) return false;
+            progress = true;
+            break;
+          }
+        }
+        if (!progress) return false;
+      }
+      return this.unfixed().length === 0;
+    }
+  }
+
+  /**
+   * 生成一局 APK 风格的谜题。
+   * @param {number} rows 行数（高）
+   * @param {number} cols 列数（宽）
+   * @param {number} seed 随机种子（决定可复现）
+   * @param {object} opts { maxGenerations, deadlineMs }
+   */
+  function generateApk(rows, cols, seed, opts) {
+    const options = opts || {};
+    const maxGenerations = options.maxGenerations || 40;
+    const deadline = Date.now() + (options.deadlineMs || 1500);
+    const gen = new TableGenerator(cols, rows, seed);
+
+    for (let attempt = 0; attempt < maxGenerations; attempt++) {
+      if (Date.now() > deadline) return null;
+      gen.reset();
+      gen.doCalculation();
+      if (gen.islands.length < 6) continue;
+
+      let built = gen.buildPuzzle();
+      if (built.weights.join('') === '' || gen.bridges.length !== built.weights.filter(w => w > 0).length) continue;
+
+      // 规则求解器判可解；不行就翻转相邻桥权重再试（APK 的 5 次机会）
+      let accepted = false;
+      for (let flip = 0; flip < 5; flip++) {
+        const solver = new Solver(built, built.weightOf);
+        if (solver.solve()) { accepted = true; break; }
+
+        const open = solver.unfixed();
+        if (!open.length) { accepted = true; break; }
+        const ei = open[gen.rng.nextInt(open.length)];
+        const e = built.edges[ei];
+        const bridge = gen.bridges.find(b => {
+          const ia = gen.islands.indexOf(b.start);
+          const ib = gen.islands.indexOf(b.end);
+          return Math.min(ia, ib) === Math.min(e.a, e.b) && Math.max(ia, ib) === Math.max(e.a, e.b);
+        });
+        if (!bridge) break;
+        const ax = bridge.horizontal ? bridge.minX + 1 : bridge.minX;
+        const ay = bridge.horizontal ? bridge.minY : bridge.minY + 1;
+        const adjacent = gen.cells.get(ax + ',' + ay);
+        if (!(adjacent instanceof GBridge) || !adjacent.weight) break;
+        const nextWeight = adjacent.weight === 1 ? 2 : 1;
+        // 1→2 会多一条双桥：若任一端已到上限就放弃这次翻转
+        if (nextWeight === 2 && (doubleCount(adjacent.start) >= MAX_DOUBLES_PER_ISLAND
+          || doubleCount(adjacent.end) >= MAX_DOUBLES_PER_ISLAND)) break;
+        adjacent.weight = nextWeight;
+        built = gen.buildPuzzle();
+      }
+      if (!accepted) continue;
+
+      const sums = new Array(built.islands.length).fill(0);
+      built.edges.forEach((e, i) => { sums[e.a] += built.weights[i]; sums[e.b] += built.weights[i]; });
+      if (sums.some(v => v < 1 || v > 8)) continue;
+
+      built.islands.forEach((isl, i) => { isl.clue = sums[i]; });
+      return {
+        level: 'apk',
+        algorithm: 'apk',
+        rows, cols,
+        islands: built.islands,
+        edges: built.edges,
+        solution: built.weights.slice(),
+        attempts: attempt + 1,
+        branches: 0
+      };
+    }
+    return null;
+  }
+
+  const api = { generateApk, TableGenerator, Solver };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  global.HashiApk = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+(function () {
+  'use strict';
+
+  const Engine = window.Hashi;
+  const LEVEL_ORDER = ['mini', 'small', 'medium', 'large', 'massive'];
+  const LEVEL_META = {
+    mini: { name: 'Mini', cn: '入门' },
+    small: { name: 'Small', cn: '轻松' },
+    medium: { name: 'Medium', cn: '标准' },
+    large: { name: 'Large', cn: '进阶' },
+    massive: { name: 'Massive', cn: '挑战' }
+  };
+  const VERSION = '0.1.1';
+  const STORE_KEY = 'hashi.web.v1';
+  const BESTS_KEY = 'hashi.bests.v1';
+  const MIN_CELL = 24;
+
+  /* 两种生成算法。尺寸上限来自实测：
+   *   经典：18×18 最坏 50ms；19×19 起唯一解命中率骤降（19×19 最坏 542ms，20×20 727ms）
+   *   APK ：20×20 最坏 179ms（22×22 起可到 0.5s），因此上限 20
+   */
+  const ALGORITHMS = {
+    classic: {
+      key: 'classic',
+      label: '经典',
+      min: 5,
+      max: 22,
+      maxArea: 330,
+      hint: '格点构造 + 唯一解计数：题面疏朗、短桥多，稳定可解。'
+    },
+    apk: {
+      key: 'apk',
+      label: 'APK 复刻',
+      min: 5,
+      max: 22,
+      maxArea: 400,
+      hint: '随机生长 + 规则求解校验：岛屿更密、长桥更多，接近 Android 原版手感。'
+    }
+  };
+
+  /* 五档尺寸按 APK 的竖屏比例设计（宽×高：6×9 / 8×12 / 10×15 / 13×18 / 15×22）。
+   * 移动端直接用竖版；桌面/横屏把棋盘旋转 90°（行列互换）。 */
+  function isLandscapeViewport() {
+    const rect = els.stage ? els.stage.getBoundingClientRect() : null;
+    if (rect && rect.height > 40) return rect.width > rect.height * 1.02;
+    return window.innerWidth > window.innerHeight;
+  }
+
+  function orientedDims(level) {
+    const cfg = Engine.LEVELS[level] || Engine.LEVELS.medium;
+    return isLandscapeViewport()
+      ? { rows: cfg.cols, cols: cfg.rows }
+      : { rows: cfg.rows, cols: cfg.cols };
+  }
+
+  const els = {
+    app: document.querySelector('.app'),
+    stage: document.getElementById('stage'),
+    canvas: document.getElementById('board'),
+    levelBtn: document.getElementById('btn-level'),
+    levelName: document.getElementById('level-name'),
+    levelMeta: document.getElementById('level-meta'),
+    bestTime: document.getElementById('best-time'),
+    time: document.getElementById('time'),
+    moves: document.getElementById('moves'),
+    status: document.getElementById('status'),
+    progress: document.getElementById('progress'),
+    statusItem: document.getElementById('status-item'),
+    note: document.getElementById('stage-note'),
+    toast: document.getElementById('toast'),
+    overlay: document.getElementById('overlay'),
+    dialog: document.getElementById('dialog'),
+    undo: document.getElementById('btn-undo'),
+    redo: document.getElementById('btn-redo'),
+    hint: document.getElementById('btn-hint'),
+    restart: document.getElementById('btn-restart'),
+    fresh: document.getElementById('btn-new'),
+    settings: document.getElementById('btn-settings'),
+    fullscreen: document.getElementById('btn-fullscreen'),
+    version: document.getElementById('app-version'),
+    drawer: document.getElementById('drawer'),
+    drawerClose: document.getElementById('btn-drawer-close'),
+    backdrop: document.getElementById('drawer-backdrop'),
+    levelList: document.getElementById('level-list'),
+    levelHint: document.getElementById('level-hint'),
+    algoGroup: document.getElementById('algo-group'),
+    algoHint: document.getElementById('algo-hint'),
+    sizeCols: document.getElementById('size-cols'),
+    sizeRows: document.getElementById('size-rows'),
+    applySize: document.getElementById('btn-apply-size'),
+    sizeError: document.getElementById('size-error'),
+    sizeHint: document.getElementById('size-hint'),
+    optSound: document.getElementById('opt-sound'),
+    optTheme: document.getElementById('opt-theme'),
+    help: document.getElementById('btn-help'),
+    clearBests: document.getElementById('btn-clear-bests')
+  };
+
+  const ctx = els.canvas.getContext('2d');
+  const bgCanvas = document.createElement('canvas');
+  const bgCtx = bgCanvas.getContext('2d');
+  const P = {};
+
+  const S = {
+    algorithm: 'classic',
+    level: 'medium',
+    rows: 11,
+    cols: 11,
+    seed: 0,
+    puzzle: null,
+    bridges: null,
+    solution: null,
+    edgeIndex: new Map(),
+    incident: [],
+    history: [],
+    future: [],
+    moves: 0,
+    elapsed: 0,
+    startedAt: 0,
+    running: false,
+    won: false,
+    selected: -1,
+    hint: null,
+    shake: null,
+    sum: null,
+    over: [],
+    done: [],
+    soundOn: true,
+    theme: 'light',
+    almostNotified: false,
+    lastRecord: false
+  };
+
+  const view = { cell: 40, pad: 16, w: 0, h: 0, r: 12, dpr: 1 };
+
+  /* ---------------- 主题与配色 ---------------- */
+  function readPalette() {
+    const cs = getComputedStyle(document.documentElement);
+    const get = n => cs.getPropertyValue(n).trim();
+    P.boardBg = get('--board-bg');
+    P.dot = get('--board-dot');
+    P.grid = get('--board-grid');
+    P.fill = get('--island-fill');
+    P.ring = get('--island-ring');
+    P.text = get('--island-text');
+    P.bridge = get('--bridge');
+    P.valid = get('--valid');
+    P.invalid = get('--invalid');
+    P.accent = get('--accent');
+    P.surface = get('--surface');
+    P.muted = get('--muted');
+  }
+
+  function applyTheme(theme) {
+    S.theme = theme;
+    document.documentElement.dataset.theme = theme;
+    readPalette();
+    if (els.optTheme) els.optTheme.checked = theme === 'dark';
+    renderBackground();
+    requestDraw();
+  }
+
+  /* ---------------- 图标 ---------------- */
+  const icon = {
+    expand: () => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H4v5"/><path d="M15 4h5v5"/><path d="M15 20h5v-5"/><path d="M9 20H4v-5"/></svg>',
+    collapse: () => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h5V4"/><path d="M20 9h-5V4"/><path d="M20 15h-5v5"/><path d="M4 15h5v5"/></svg>',
+    gear: () => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1Z"/></svg>'
+  };
+
+  /* ---------------- 音效 ---------------- */
+  let audio = null;
+  function play(kind) {
+    if (!S.soundOn) return;
+    try {
+      if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+      if (audio.state === 'suspended') audio.resume();
+      const now = audio.currentTime;
+      const tones = {
+        place: [[520, 0.05]],
+        remove: [[300, 0.06]],
+        double: [[640, 0.05], [760, 0.05]],
+        error: [[180, 0.1]],
+        win: [[523, 0.12], [659, 0.12], [784, 0.16], [1046, 0.24]]
+      }[kind] || [[440, 0.05]];
+      let t = now;
+      for (const [freq, dur] of tones) {
+        const osc = audio.createOscillator();
+        const gain = audio.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.09, t + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        osc.connect(gain).connect(audio.destination);
+        osc.start(t);
+        osc.stop(t + dur + 0.02);
+        t += dur * 0.72;
+      }
+    } catch (_) { /* 忽略音频错误 */ }
+  }
+
+  /* ---------------- 生成与状态 ---------------- */
+  function setPuzzle(p, seed) {
+    S.puzzle = p;
+    S.seed = seed;
+    S.rows = p.rows;
+    S.cols = p.cols;
+    S.bridges = new Uint8Array(p.edges.length);
+    S.solution = p.solution;
+    S.history = [];
+    S.future = [];
+    S.moves = 0;
+    S.elapsed = 0;
+    S.startedAt = 0;
+    S.running = false;
+    S.won = false;
+    S.selected = -1;
+    S.hint = null;
+    S.shake = null;
+    S.almostNotified = false;
+    S.lastRecord = false;
+    S.edgeIndex = new Map();
+    p.edges.forEach((e, i) => S.edgeIndex.set(e.a + '-' + e.b, i));
+    S.incident = Array.from({ length: p.islands.length }, () => []);
+    p.edges.forEach((e, i) => { S.incident[e.a].push(i); S.incident[e.b].push(i); });
+    refresh();
+    layout();
+    requestDraw();
+    updateStatus();
+    updateUndoRedo();
+    renderTime();
+    syncUI();
+    els.canvas.setAttribute('aria-label', `Hashi 棋盘，${p.islands.length} 座岛屿，${p.rows} 行 ${p.cols} 列`);
+    save();
+  }
+
+  /** 统一入口：按算法与尺寸生成，返回 engine.js 结构 */
+  function generatePuzzle(algorithm, level, rows, cols, seed) {
+    if (algorithm === 'apk' && window.HashiApk) {
+      return window.HashiApk.generateApk(rows, cols, seed, { maxGenerations: 40 });
+    }
+    // 预设也要带上朝向后的行列（旋转 90° 时行列互换）
+    const base = level === 'custom' ? Engine.customConfig(rows, cols) : Engine.resolveConfig(level);
+    return Engine.generate(Object.assign({}, base, { rows, cols }), seed);
+  }
+
+  /** 计算本次要用的 算法/档位/行列 */
+  function resolveTarget(o) {
+    const algorithm = ALGORITHMS[o.algorithm] ? o.algorithm : S.algorithm;
+    const level = o.level || S.level;
+    if (level === 'custom') {
+      // 自定义尺寸由玩家直接指定，不再自动旋转
+      return { algorithm, level, rows: o.rows || S.rows, cols: o.cols || S.cols };
+    }
+    const dims = orientedDims(level);
+    return { algorithm, level, rows: dims.rows, cols: dims.cols };
+  }
+
+  function newGame(opts) {
+    const o = typeof opts === 'string' ? { level: opts } : (opts || {});
+    const target = resolveTarget(o);
+    const seed = o.seed === undefined || o.seed === null ? (Math.random() * 1e9) | 0 : o.seed;
+    const prev = { algorithm: S.algorithm, level: S.level, rows: S.rows, cols: S.cols };
+    // 先生效算法，让设置面板立刻反馈；生成失败再回滚
+    S.algorithm = target.algorithm;
+    syncUI();
+    els.note.textContent = '正在生成谜题…';
+    els.note.classList.add('show');
+    const t0 = performance.now();
+    setTimeout(() => {
+      const p = generatePuzzle(target.algorithm, target.level, target.rows, target.cols, seed);
+      if (!p) {
+        S.algorithm = prev.algorithm;
+        syncUI();
+        els.note.textContent = '生成失败，请调整尺寸后重试';
+        setTimeout(() => els.note.classList.remove('show'), 1600);
+        return;
+      }
+      S.algorithm = target.algorithm;
+      S.level = target.level;
+      S.rows = target.rows;
+      S.cols = target.cols;
+      setPuzzle(p, seed);
+      els.note.classList.remove('show');
+      if (performance.now() - t0 > 400) toast('已生成新谜题');
+    }, 20);
+  }
+
+  function refresh() {
+    const an = Engine.analyze(S.puzzle, S.bridges);
+    S.sum = an.sum;
+    S.over = an.over;
+    S.done = an.done;
+    return an;
+  }
+
+  /* ---------------- 布局与绘制 ---------------- */
+  function layout() {
+    if (!S.puzzle) return;
+    const rect = els.stage.getBoundingClientRect();
+    const maxW = Math.max(200, rect.width - 12);
+    const maxH = Math.max(200, rect.height - 12);
+    const { rows, cols } = S.puzzle;
+    const padFactor = 0.34;
+    let cell = Math.floor(Math.min(maxW / (cols + padFactor * 2), maxH / (rows + padFactor * 2)));
+    cell = Math.max(16, cell);
+    view.cell = cell;
+    view.pad = Math.round(cell * padFactor);
+    view.w = cols * cell + view.pad * 2;
+    view.h = rows * cell + view.pad * 2;
+    view.r = Math.max(8, cell * 0.365);
+    view.dpr = Math.min(3, window.devicePixelRatio || 1);
+
+    els.canvas.style.width = view.w + 'px';
+    els.canvas.style.height = view.h + 'px';
+    els.canvas.width = Math.round(view.w * view.dpr);
+    els.canvas.height = Math.round(view.h * view.dpr);
+    ctx.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
+    renderBackground();
+    requestDraw();
+  }
+
+  /** 背景：纸面 + 点阵（离屏缓存，避免每帧重画；虚线引导线在 draw 中单独绘制） */
+  function renderBackground() {
+    if (!S.puzzle || !view.w) return;
+    const { cell, pad, w, h, dpr } = view;
+    bgCanvas.width = Math.round(w * dpr);
+    bgCanvas.height = Math.round(h * dpr);
+    bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    bgCtx.clearRect(0, 0, w, h);
+
+    bgCtx.fillStyle = P.boardBg;
+    roundRect(bgCtx, 0.5, 0.5, w - 1, h - 1, 14);
+    bgCtx.fill();
+
+    // 点阵：每个格子中心
+    bgCtx.fillStyle = P.dot;
+    const dotR = Math.max(1, cell * 0.024);
+    for (let r = 0; r < S.puzzle.rows; r++) {
+      for (let c = 0; c < S.puzzle.cols; c++) {
+        bgCtx.beginPath();
+        bgCtx.arc(pad + c * cell + cell / 2, pad + r * cell + cell / 2, dotR, 0, Math.PI * 2);
+        bgCtx.fill();
+      }
+    }
+  }
+
+  function centerOf(isl) {
+    return {
+      x: view.pad + isl.c * view.cell + view.cell / 2,
+      y: view.pad + isl.r * view.cell + view.cell / 2
+    };
+  }
+
+  let frame = 0;
+  let rafId = 0;
+  function requestDraw() {
+    if (rafId) return;
+    rafId = requestAnimationFrame(t => {
+      rafId = 0;
+      draw(t);
+      if (needsAnimation()) ensureLoop();
+    });
+  }
+
+  function needsAnimation() {
+    return !!(S.selected >= 0 || S.hint || S.won || S.shake || S.dragPreview);
+  }
+
+  function loop(t) {
+    frame = 0;
+    draw(t);
+    if (needsAnimation()) frame = requestAnimationFrame(loop);
+  }
+
+  function ensureLoop() {
+    if (!frame) frame = requestAnimationFrame(loop);
+  }
+
+  function draw(t) {
+    if (!S.puzzle) return;
+    const now = t || performance.now();
+    const { cell, pad, w, h } = view;
+
+    ctx.clearRect(0, 0, w, h);
+    if (bgCanvas.width) ctx.drawImage(bgCanvas, 0, 0, w, h);
+
+    drawGuides();
+    drawBridges(now);
+    drawHint(now);
+    drawDragPreview();
+    drawIslands(now);
+  }
+
+  /** 虚线引导线：揭示「同行/同列且中间无岛」的可连方向；选中的岛高亮，其余淡出 */
+  function drawGuides() {
+    if (S.won) return;                       // 通关后不再显示未完成方向的引导
+    const edges = S.puzzle.edges;
+    const selected = S.selected;
+    const rim = view.r * 0.94;
+    ctx.save();
+    ctx.lineWidth = 1;
+    for (let i = 0; i < edges.length; i++) {
+      if (S.bridges[i]) continue;
+      const e = edges[i];
+      const hot = selected >= 0 && (e.a === selected || e.b === selected);
+      const a = centerOf(S.puzzle.islands[e.a]);
+      const b = centerOf(S.puzzle.islands[e.b]);
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const len = Math.hypot(dx, dy) || 1;
+      const ux = dx / len, uy = dy / len;
+      ctx.globalAlpha = hot ? 0.75 : (selected >= 0 ? 0.16 : 0.34);
+      ctx.strokeStyle = hot ? P.accent : P.bridge;
+      ctx.setLineDash(hot ? [4, 4] : [3, 5]);
+      ctx.beginPath();
+      ctx.moveTo(a.x + ux * rim, a.y + uy * rim);
+      ctx.lineTo(b.x - ux * rim, b.y - uy * rim);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawBridges(now) {
+    const edges = S.puzzle.edges;
+    const overSet = new Set(S.over);
+    ctx.lineCap = 'round';
+
+    for (let i = 0; i < edges.length; i++) {
+      const v = S.bridges[i];
+      if (!v) continue;
+      const e = edges[i];
+      const a = centerOf(S.puzzle.islands[e.a]);
+      const b = centerOf(S.puzzle.islands[e.b]);
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const len = Math.hypot(dx, dy) || 1;
+      const ux = dx / len, uy = dy / len;
+      const r = view.r * 0.94;
+      const x1 = a.x + ux * r, y1 = a.y + uy * r;
+      const x2 = b.x - ux * r, y2 = b.y - uy * r;
+
+      const bad = overSet.has(e.a) || overSet.has(e.b);
+      let color = bad ? P.invalid : P.bridge;
+      let alpha = bad ? 0.92 : 0.95;
+
+      if (S.won) {
+        color = P.valid;
+        alpha = 0.9;
+      }
+
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = color;
+
+      if (v === 1) {
+        ctx.lineWidth = Math.max(2.4, view.cell * 0.115);
+        line(x1, y1, x2, y2);
+      } else {
+        const off = Math.max(2.2, view.cell * 0.062);
+        const px = -uy * off, py = ux * off;
+        ctx.lineWidth = Math.max(1.8, view.cell * 0.082);
+        line(x1 + px, y1 + py, x2 + px, y2 + py);
+        line(x1 - px, y1 - py, x2 - px, y2 - py);
+      }
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  function drawHint(now) {
+    if (!S.hint) return;
+    if (now > S.hint.until) { S.hint = null; return; }
+    const e = S.puzzle.edges[S.hint.edge];
+    if (!e) return;
+    const a = centerOf(S.puzzle.islands[e.a]);
+    const b = centerOf(S.puzzle.islands[e.b]);
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const ux = dx / len, uy = dy / len;
+    const r = view.r * 0.98;
+
+    const pulse = 0.55 + 0.45 * Math.sin(now / 260);
+    const color = S.hint.mode === 'remove' ? P.invalid : P.valid;
+
+    ctx.save();
+    ctx.globalAlpha = 0.35 + 0.35 * pulse;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(2.5, view.cell * 0.1);
+    ctx.setLineDash([Math.max(4, view.cell * 0.18), Math.max(4, view.cell * 0.16)]);
+    ctx.lineDashOffset = -now / 45;
+    line(a.x + ux * r, a.y + uy * r, b.x - ux * r, b.y - uy * r);
+    ctx.restore();
+
+    // 两端脉动环
+    for (const p of [a, b]) {
+      ctx.save();
+      ctx.globalAlpha = 0.25 + 0.3 * pulse;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, view.r + 4 + pulse * 3, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  function drawDragPreview() {
+    if (!S.dragPreview) return;
+    const { from, to } = S.dragPreview;
+    if (from < 0 || to < 0) return;
+    const a = centerOf(S.puzzle.islands[from]);
+    const b = centerOf(S.puzzle.islands[to]);
+    ctx.save();
+    ctx.globalAlpha = 0.5;
+    ctx.strokeStyle = P.accent;
+    ctx.lineWidth = Math.max(2.4, view.cell * 0.1);
+    ctx.setLineDash([6, 6]);
+    line(a.x, a.y, b.x, b.y);
+    ctx.restore();
+  }
+
+  function drawIslands(now) {
+    const islands = S.puzzle.islands;
+    const doneSet = new Set(S.done);
+    const overSet = new Set(S.over);
+
+    for (const isl of islands) {
+      const { x, y } = centerOf(isl);
+      let cx = x, cy = y;
+      if (S.shake && S.shake.id === isl.id && now - S.shake.at < 380) {
+        const k = 1 - (now - S.shake.at) / 380;
+        cx += Math.sin((now - S.shake.at) / 22) * 3.4 * k;
+      }
+
+      const over = overSet.has(isl.id);
+      const done = doneSet.has(isl.id);
+      const selected = S.selected === isl.id;
+
+      let ring = P.ring;
+      let text = P.text;
+      let fill = P.fill;
+      if (over) { ring = P.invalid; text = P.invalid; }
+      else if (done) { ring = P.valid; text = P.valid; }
+      if (selected) ring = P.accent;
+
+      const scale = selected ? 1 + 0.035 * Math.sin(now / 320) : 1;
+      const r = view.r * scale;
+
+      if (selected) {
+        ctx.save();
+        ctx.globalAlpha = 0.18;
+        ctx.fillStyle = P.accent;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r + 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fillStyle = fill;
+      ctx.shadowColor = S.theme === 'dark' ? 'rgba(0,0,0,.55)' : 'rgba(30,48,58,.16)';
+      ctx.shadowBlur = Math.max(3, view.cell * 0.12);
+      ctx.shadowOffsetY = Math.max(1, view.cell * 0.03);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.lineWidth = Math.max(1.8, view.cell * 0.068);
+      ctx.strokeStyle = ring;
+      ctx.stroke();
+
+      if (done) {
+        ctx.save();
+        ctx.globalAlpha = 0.45;
+        ctx.strokeStyle = ring;
+        ctx.lineWidth = Math.max(1, view.cell * 0.028);
+        ctx.beginPath();
+        ctx.moveTo(cx - r * 0.62, cy - r * 0.62);
+        ctx.lineTo(cx + r * 0.62, cy + r * 0.62);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      ctx.fillStyle = text;
+      const fs = Math.max(9, r * 1.02);
+      ctx.font = `600 ${fs}px "Inter", "SF Pro Text", system-ui, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(isl.clue), cx, cy + fs * 0.04);
+    }
+  }
+
+  function roundRect(c, x, y, w, h, r) {
+    c.beginPath();
+    c.moveTo(x + r, y);
+    c.arcTo(x + w, y, x + w, y + h, r);
+    c.arcTo(x + w, y + h, x, y + h, r);
+    c.arcTo(x, y + h, x, y, r);
+    c.arcTo(x, y, x + w, y, r);
+    c.closePath();
+  }
+
+  function line(x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+
+  /* ---------------- 交互 ---------------- */
+  function toBoard(ev) {
+    const rect = els.canvas.getBoundingClientRect();
+    return { x: ev.clientX - rect.left, y: ev.clientY - rect.top };
+  }
+
+  function islandAt(x, y) {
+    if (!S.puzzle) return -1;
+    const limit = Math.max(view.r * 1.5, view.cell * 0.46);
+    let best = -1, bestD = Infinity;
+    for (const isl of S.puzzle.islands) {
+      const c = centerOf(isl);
+      const d = Math.hypot(c.x - x, c.y - y);
+      if (d < limit && d < bestD) { bestD = d; best = isl.id; }
+    }
+    return best;
+  }
+
+  /** 命中测试：点是否落在某座已建成的桥上（用于「点桥即拆」） */
+  function bridgeAt(x, y) {
+    if (!S.puzzle) return -1;
+    const tol = Math.max(view.r * 0.9, view.cell * 0.28);
+    let best = -1, bestD = Infinity;
+    for (let i = 0; i < S.puzzle.edges.length; i++) {
+      if (!S.bridges[i]) continue;
+      const e = S.puzzle.edges[i];
+      const a = centerOf(S.puzzle.islands[e.a]);
+      const b = centerOf(S.puzzle.islands[e.b]);
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const len2 = dx * dx + dy * dy || 1;
+      const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / len2));
+      const d = Math.hypot(x - (a.x + dx * t), y - (a.y + dy * t));
+      if (d <= tol && d < bestD) { bestD = d; best = i; }
+    }
+    return best;
+  }
+
+  function edgeBetween(a, b) {
+    const key = Math.min(a, b) + '-' + Math.max(a, b);
+    const idx = S.edgeIndex.get(key);
+    return idx === undefined ? -1 : idx;
+  }
+
+  function targetForDrag(fromId, x, y) {
+    let best = -1, bestScore = Infinity;
+    for (const ei of S.incident[fromId]) {
+      const e = S.puzzle.edges[ei];
+      const otherId = e.a === fromId ? e.b : e.a;
+      const a = centerOf(S.puzzle.islands[fromId]);
+      const b = centerOf(S.puzzle.islands[otherId]);
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const len2 = dx * dx + dy * dy || 1;
+      const t = ((x - a.x) * dx + (y - a.y) * dy) / len2;
+      if (t < 0.25 || t > 1.25) continue;
+      const px = a.x + dx * Math.min(1, t), py = a.y + dy * Math.min(1, t);
+      const dist = Math.hypot(x - px, y - py);
+      if (dist > view.cell * 0.75) continue;
+      const score = dist + (1 - Math.min(1, t)) * view.cell;
+      if (score < bestScore) { bestScore = score; best = otherId; }
+    }
+    return best;
+  }
+
+  let drag = null;
+
+  els.canvas.addEventListener('pointerdown', ev => {
+    if (!S.puzzle || S.won) return;
+    if (drag) return; // 忽略多指同时按下，避免状态互相覆盖
+    if (ev.pointerType === 'mouse' && ev.button !== 0) return;
+    const p = toBoard(ev);
+    const id = islandAt(p.x, p.y);
+    if (id < 0) {
+      const bi = bridgeAt(p.x, p.y);
+      S.selected = -1;
+      if (bi >= 0) {
+        // APK: "To delete a bridge you swipe again or simply click on it."
+        setBridge(bi, 0, true);
+        return;
+      }
+      requestDraw();
+      return;
+    }
+    drag = { id, x: p.x, y: p.y, moved: false, target: -1, pointerId: ev.pointerId };
+    try { els.canvas.setPointerCapture(ev.pointerId); } catch (_) {}
+    S.hint = null;
+  });
+
+  els.canvas.addEventListener('pointermove', ev => {
+    if (!drag || ev.pointerId !== drag.pointerId) return;
+    const p = toBoard(ev);
+    if (!drag.moved && Math.hypot(p.x - drag.x, p.y - drag.y) > Math.max(8, view.cell * 0.24)) {
+      drag.moved = true;
+    }
+    if (drag.moved) {
+      const t = targetForDrag(drag.id, p.x, p.y);
+      S.dragPreview = t >= 0 ? { from: drag.id, to: t } : null;
+      drag.target = t;
+      requestDraw();
+    }
+  });
+
+  function endDrag(ev, cancelled) {
+    if (!drag || (ev && ev.pointerId !== drag.pointerId)) return;
+    const { id, moved, target } = drag;
+    drag = null;
+    S.dragPreview = null;
+    try { els.canvas.releasePointerCapture(ev.pointerId); } catch (_) {}
+
+    if (!cancelled) {
+      if (moved && target >= 0 && target !== id) {
+        const ei = edgeBetween(id, target);
+        if (ei >= 0) cycleEdge(ei);
+        else S.selected = id;
+      } else if (!moved) {
+        tapIsland(id);
+      }
+    }
+    requestDraw();
+  }
+
+  els.canvas.addEventListener('pointerup', ev => endDrag(ev, false));
+  els.canvas.addEventListener('pointercancel', ev => endDrag(ev, true));
+
+  function tapIsland(id) {
+    if (S.selected === id) { S.selected = -1; return; }
+    if (S.selected >= 0) {
+      const ei = edgeBetween(S.selected, id);
+      if (ei >= 0) { cycleEdge(ei); return; }
+    }
+    S.selected = id;
+  }
+
+  function cycleEdge(ei) {
+    const cur = S.bridges[ei];
+    const next = cur === 0 ? 1 : cur === 1 ? 2 : 0;
+    setBridge(ei, next, true);
+  }
+
+  function setBridge(ei, value, record) {
+    const prev = S.bridges[ei];
+    if (prev === value) return;
+    if (value > 0) {
+      const cross = S.puzzle.edges[ei].cross || [];
+      for (const ci of cross) {
+        if (S.bridges[ci] > 0) {
+          toast('桥不能交叉');
+          play('error');
+          return;
+        }
+      }
+    }
+    S.bridges[ei] = value;
+    if (record) {
+      S.history.push({ ei, prev, next: value });
+      S.future.length = 0;
+      S.hint = null;
+      S.moves++;
+      if (!S.running && !S.won) startTimer();
+      if (value === 2) play('double');
+      else if (value === 0) play('remove');
+      else play('place');
+    }
+    const an = refresh();
+    if (an.over.length && prev <= S.solution[ei] && value > S.solution[ei]) {
+      S.shake = { id: an.over[an.over.length - 1], at: performance.now() };
+      play('error');
+      toast('桥太多了，超出岛上的数字');
+    }
+    updateStatus();
+    updateUndoRedo();
+    save();
+    requestDraw();
+
+    if (an.solved && !S.won) finish();
+    else if (an.almost && !S.almostNotified) {
+      S.almostNotified = true;
+      toast('数字都对上了，但还有岛屿没连成一片');
+    } else if (!an.almost) {
+      S.almostNotified = false;
+    }
+  }
+
+  function undo() {
+    if (!S.history.length || S.won) return;
+    const a = S.history.pop();
+    S.bridges[a.ei] = a.prev;
+    S.future.push(a);
+    S.moves = Math.max(0, S.moves - 1);
+    refresh();
+    updateStatus();
+    updateUndoRedo();
+    save();
+    requestDraw();
+    play('remove');
+  }
+
+  function redo() {
+    if (!S.future.length || S.won) return;
+    const a = S.future.pop();
+    S.bridges[a.ei] = a.next;
+    S.history.push(a);
+    S.moves++;
+    refresh();
+    updateStatus();
+    updateUndoRedo();
+    save();
+    requestDraw();
+    play('place');
+  }
+
+  function restart() {
+    if (!S.puzzle) return;
+    S.bridges.fill(0);
+    S.history = [];
+    S.future = [];
+    S.moves = 0;
+    S.elapsed = 0;
+    S.running = false;
+    S.startedAt = 0;
+    S.won = false;
+    S.selected = -1;
+    S.hint = null;
+    S.almostNotified = false;
+    refresh();
+    renderTime();
+    updateStatus();
+    updateUndoRedo();
+    save();
+    requestDraw();
+    toast('已清空棋盘');
+  }
+
+  /* ---------------- 提示 ---------------- */
+  function doHint() {
+    if (!S.puzzle || S.won) return;
+    const sol = S.solution;
+    let wrong = -1, missing = -1;
+    for (let i = 0; i < sol.length; i++) {
+      if (S.bridges[i] > sol[i]) { wrong = i; break; }
+    }
+    if (wrong < 0) {
+      for (let i = 0; i < sol.length; i++) {
+        if (S.bridges[i] < sol[i]) {
+          if (missing < 0 || (S.bridges[i] === 0 && S.bridges[missing] > 0)) missing = i;
+        }
+      }
+    }
+    const target = wrong >= 0 ? wrong : missing;
+    if (target < 0) {
+      toast('棋盘已经完成');
+      return;
+    }
+    const now = performance.now();
+    if (S.hint && S.hint.edge === target && now < S.hint.until) {
+      setBridge(target, sol[target], true);
+      S.hint = null;
+      return;
+    }
+    S.hint = { edge: target, until: now + 9000, mode: wrong >= 0 ? 'remove' : 'add' };
+    S.selected = -1;
+    toast(wrong >= 0 ? '这里多了一座桥 · 再点一次「提示」即可移除' : '这里还差桥 · 再点一次「提示」即可落桥');
+    requestDraw();
+  }
+
+  /* ---------------- 最佳成绩 ---------------- */
+  let bests = {};
+
+  function loadBests() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(BESTS_KEY) || '{}');
+      bests = raw && typeof raw === 'object' ? raw : {};
+    } catch (_) { bests = {}; }
+
+    // 旧版记录只按档位存（"medium"），迁移到当前算法命名空间（"classic:medium"）
+    let migrated = false;
+    for (const key of Object.keys(bests)) {
+      const item = bests[key];
+      if (!item || typeof item !== 'object' || typeof item.ms !== 'number') continue;
+      if (key.indexOf(':') === -1) {
+        bests['classic:' + key] = item;
+        delete bests[key];
+        migrated = true;
+      }
+    }
+    if (migrated) persistBests();
+  }
+
+  function persistBests() {
+    try { localStorage.setItem(BESTS_KEY, JSON.stringify(bests)); } catch (_) {}
+  }
+
+  /** 记录键：预设档位按「算法:档位」；自定义按「算法:custom:宽x高」 */
+  function bestKey(algorithm, level, rows, cols) {
+    return level === 'custom'
+      ? `${algorithm}:custom:${cols}x${rows}`
+      : `${algorithm}:${level}`;
+  }
+
+  function bestOf(level, algorithm, rows, cols) {
+    return bests[bestKey(
+      algorithm || S.algorithm,
+      level || S.level,
+      rows || S.rows,
+      cols || S.cols
+    )] || null;
+  }
+
+  function recordBest(level, algorithm, rows, cols, ms, moves) {
+    const key = bestKey(algorithm, level, rows, cols);
+    const cur = bests[key];
+    if (cur && cur.ms <= ms) return false;
+    bests[key] = { ms, moves, at: Date.now() };
+    persistBests();
+    return true;
+  }
+
+  function updateBestHud() {
+    if (!els.bestTime) return;
+    const best = bestOf();
+    els.bestTime.textContent = best ? formatTime(best.ms) : '—';
+  }
+
+  /* ---------------- 计时与状态 ---------------- */
+  function startTimer() {
+    if (S.running) return;
+    S.running = true;
+    S.startedAt = Date.now();
+    renderTime();
+  }
+
+  function stopTimer() {
+    if (!S.running) return;
+    S.elapsed += Date.now() - S.startedAt;
+    S.running = false;
+    S.startedAt = 0;
+  }
+
+  function elapsedMs() {
+    return S.elapsed + (S.running ? Date.now() - S.startedAt : 0);
+  }
+
+  function formatTime(ms) {
+    const total = ms > 0 ? Math.max(1, Math.floor(ms / 1000)) : 0;
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = total % 60;
+    const mm = String(m).padStart(2, '0');
+    const ss = String(s).padStart(2, '0');
+    return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+  }
+
+  function renderTime() {
+    els.time.textContent = formatTime(elapsedMs());
+  }
+
+  let timerId = setInterval(() => { if (S.running) renderTime(); }, 500);
+
+  function updateStatus() {
+    if (!S.puzzle) return;
+    const an = { solved: S.done.length === S.puzzle.islands.length, almost: false };
+    an.almost = an.solved && !isConnected();
+    let text = '进行中', cls = '';
+    if (S.won) { text = '已完成'; cls = 'is-won'; }
+    else if (an.almost) { text = '差最后一步'; cls = 'is-almost'; }
+    els.status.textContent = text;
+    els.statusItem.className = 'hud-item status ' + cls;
+    els.moves.textContent = String(S.moves);
+    if (els.progress) {
+      const pct = Math.round((S.done.length / S.puzzle.islands.length) * 100);
+      els.progress.style.width = pct + '%';
+      els.progress.style.background = S.won ? 'var(--valid)' : (an.almost ? 'var(--accent)' : 'var(--valid)');
+    }
+    renderTime();
+  }
+
+  function isConnected() {
+    return Engine.analyze(S.puzzle, S.bridges).connected;
+  }
+
+  function updateUndoRedo() {
+    els.undo.disabled = !S.history.length || S.won;
+    els.redo.disabled = !S.future.length || S.won;
+  }
+
+  /* ---------------- 通关 ---------------- */
+  function finish() {
+    stopTimer();
+    S.won = true;
+    S.lastRecord = recordBest(S.level, S.algorithm, S.rows, S.cols, elapsedMs(), S.moves);
+    S.selected = -1;
+    S.hint = null;
+    updateStatus();
+    updateUndoRedo();
+    syncUI();
+    save();
+    requestDraw();
+    play('win');
+    setTimeout(() => showWin(), 420);
+  }
+
+  function showWin() {
+    els.toast.classList.remove('show');
+    const level = LEVEL_META[S.level];
+    const best = bestOf(S.level, S.algorithm, S.rows, S.cols);
+    const time = formatTime(elapsedMs());
+    els.dialog.innerHTML = `
+      <p class="eyebrow">Puzzle Complete</p>
+      <h2>全部连通了</h2>
+      <p class="lede">${level ? level.name + ' · ' + level.cn : ''} 关卡已完成，所有岛屿的数字都恰好满足。</p>
+      ${S.lastRecord ? '<p class="record-badge">新纪录 · 该难度最快</p>' : ''}
+      <div class="win-stats">
+        <div><span>用时</span><b>${time}</b></div>
+        <div><span>步数</span><b>${S.moves}</b></div>
+        <div><span>最佳</span><b>${best ? formatTime(best.ms) : time}</b></div>
+      </div>
+      <div class="dialog-actions">
+        <button class="btn" data-close="1">看看棋盘</button>
+        <button class="btn solid" data-new="1">再来一局</button>
+      </div>`;
+    els.overlay.classList.add('show');
+  }
+
+  function showHelp() {
+    els.toast.classList.remove('show');
+    els.dialog.innerHTML = `
+      <p class="eyebrow">How to play</p>
+      <h2>橋をかけろ</h2>
+      <p class="lede">把所有岛屿用桥连成一个整体，每座岛上的数字就是它需要的桥的数量。</p>
+      <ul class="rules">
+        <li><em>1</em><div><b>水平或垂直</b><span>桥只能横平竖直地连接同一行或同一列上的两座岛，中间不能隔着别的岛。</span></div></li>
+        <li><em>2</em><div><b>最多两座</b><span>一对岛之间最多可以建两座桥（双桥），不能再多。</span></div></li>
+        <li><em>3</em><div><b>不能交叉</b><span>桥之间不允许交叉。</span></div></li>
+        <li><em>4</em><div><b>数量刚好</b><span>每座岛连出的桥数要正好等于岛上的数字；超出会变红。</span></div></li>
+        <li><em>5</em><div><b>全部连通</b><span>最后所有岛必须能通过桥互相到达，不能有独立的小团体。</span></div></li>
+      </ul>
+      <div class="tips">
+        点一下岛选中，再点同一条线上的另一座岛即可造桥；连续点同一对岛可在 0 → 1 → 2 座之间切换。<br>
+        直接从一座岛向另一座岛拖动也能架桥；<b>点一下已建好的桥即可拆除</b>。<br>
+        快捷键：<kbd>U</kbd> 撤销 · <kbd>R</kbd> 重开 · <kbd>N</kbd> 新局 · <kbd>H</kbd> 提示 · <kbd>S</kbd> 设置。
+      </div>
+      <div class="dialog-actions" style="margin-top:18px">
+        <button class="btn solid" data-close="1">开始解题</button>
+      </div>`;
+    els.overlay.classList.add('show');
+  }
+
+  function closeOverlay() {
+    els.overlay.classList.remove('show');
+  }
+
+  els.overlay.addEventListener('click', ev => {
+    const t = ev.target;
+    if (t.dataset && t.dataset.close) { closeOverlay(); return; }
+    if (t.dataset && t.dataset.new) { closeOverlay(); newGame(S.level); return; }
+    if (t === els.overlay) closeOverlay();
+  });
+
+  /* ---------------- 提示条 ---------------- */
+  let toastId = 0;
+  function toast(text) {
+    els.toast.textContent = text;
+    els.toast.classList.add('show');
+    const id = ++toastId;
+    setTimeout(() => { if (id === toastId) els.toast.classList.remove('show'); }, 2600);
+  }
+
+  /* ---------------- 存档 ---------------- */
+  function save() {
+    if (!S.puzzle) return;
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({
+        algorithm: S.algorithm,
+        level: S.level,
+        rows: S.rows,
+        cols: S.cols,
+        seed: S.seed,
+        bridges: Array.from(S.bridges),
+        moves: S.moves,
+        elapsed: elapsedMs(),
+        won: S.won,
+        theme: S.theme,
+        sound: S.soundOn
+      }));
+    } catch (_) {}
+  }
+
+  function restore() {
+    let data = null;
+    try { data = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (_) { data = null; }
+    if (!data || !data.level || typeof data.seed !== 'number') return false;
+
+    if (data.theme) applyTheme(data.theme);
+    if (typeof data.sound === 'boolean') setSound(data.sound);
+
+    const algorithm = data.algorithm === 'apk' ? 'apk' : 'classic';
+    let level = data.level || 'medium';
+    let rows = data.rows;
+    let cols = data.cols;
+    if (level !== 'custom') {
+      const cfg = Engine.LEVELS[level] || Engine.LEVELS.medium;
+      const matches = (r, c) => rows === r && cols === c;
+      if (!matches(cfg.rows, cfg.cols) && !matches(cfg.cols, cfg.rows)) {
+        const dims = orientedDims(level);
+        rows = dims.rows;
+        cols = dims.cols;
+      }
+    }
+    if (!Number.isInteger(rows) || !Number.isInteger(cols)) {
+      level = 'medium';
+      rows = Engine.LEVELS.medium.rows;
+      cols = Engine.LEVELS.medium.cols;
+    }
+    const p = generatePuzzle(algorithm, level, rows, cols, data.seed);
+    if (!p) return false;
+    S.algorithm = algorithm;
+    S.level = level;
+    S.rows = rows;
+    S.cols = cols;
+    setPuzzle(p, data.seed);
+
+    if (Array.isArray(data.bridges) && data.bridges.length === p.edges.length) {
+      for (let i = 0; i < p.edges.length; i++) {
+        const v = data.bridges[i];
+        S.bridges[i] = v === 1 || v === 2 ? v : 0;
+      }
+      S.moves = data.moves || 0;
+      S.elapsed = Math.max(0, data.elapsed || 0);
+      refresh();
+      updateStatus();
+      updateUndoRedo();
+      if (S.done.length === p.islands.length) {
+        const an = Engine.analyze(p, S.bridges);
+        if (an.solved) { S.won = true; updateStatus(); }
+      }
+      requestDraw();
+    }
+    return true;
+  }
+
+  /* ---------------- 关卡与设置抽屉 ---------------- */
+  function buildLevelList() {
+    els.levelList.innerHTML = '';
+    for (const key of LEVEL_ORDER) {
+      const cfg = Engine.LEVELS[key];
+      const meta = LEVEL_META[key];
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'level-row';
+      row.dataset.level = key;
+      row.innerHTML = `
+        <span class="name">${meta.name} · ${meta.cn}<span class="warn" data-warn></span></span>
+        <span class="meta" data-meta>${cfg.cols}×${cfg.rows}</span>
+        <span class="best"><small>最佳</small><b data-best>—</b></span>`;
+      row.addEventListener('click', () => {
+        closeDrawer();
+        if (key === S.level && S.puzzle) return;
+        newGame(key);
+      });
+      els.levelList.appendChild(row);
+    }
+  }
+
+  /** 统一刷新：顶栏（尺寸+算法）、难度列表高亮/最佳、分段控件、提示文案 */
+  function syncUI() {
+    if (!S.puzzle) return;
+    const lim = ALGORITHMS[S.algorithm];
+    els.levelName.textContent = S.level === 'custom' ? '自定义' : (LEVEL_META[S.level] || LEVEL_META.medium).name;
+    els.levelMeta.textContent = `${S.cols}×${S.rows} · ${lim.label}`;
+
+    for (const row of els.levelList.children) {
+      const key = row.dataset.level;
+      row.classList.toggle('is-active', key === S.level);
+      const cfg = Engine.LEVELS[key];
+      const dims = orientedDims(key);
+      const meta = row.querySelector('[data-meta]');
+      if (meta) meta.textContent = `${dims.cols}×${dims.rows}`;
+      const best = bestOf(key, S.algorithm, dims.rows, dims.cols);
+      const slot = row.querySelector('[data-best]');
+      if (slot) {
+        slot.textContent = best ? formatTime(best.ms) : '—';
+        slot.classList.toggle('is-empty', !best);
+      }
+      const warn = row.querySelector('[data-warn]');
+      if (warn) warn.textContent = row.dataset.small === '1' ? '·小屏偏小' : '';
+    }
+
+    for (const btn of els.algoGroup.querySelectorAll('.seg')) {
+      const on = btn.dataset.algo === S.algorithm;
+      btn.classList.toggle('is-active', on);
+      btn.setAttribute('aria-checked', on ? 'true' : 'false');
+    }
+
+    if (els.algoHint) els.algoHint.textContent = lim.hint;
+    if (els.sizeHint) {
+      const own = bestOf(S.level, S.algorithm, S.rows, S.cols);
+      els.sizeHint.textContent =
+        `单边 ${lim.min}–${lim.max}、面积 ≤ ${lim.maxArea} · 当前 ${S.cols}×${S.rows}` +
+        (S.level === 'custom' ? ` · 最佳 ${own ? formatTime(own.ms) : '—'}` : '') +
+        (view.cell && view.cell < MIN_CELL ? ' · 当前屏幕偏小' : '');
+    }
+    updateBestHud();
+  }
+
+  /** 切换生成算法：必要时把超出上限的尺寸收敛，然后重开一局 */
+  function selectAlgorithm(key) {
+    if (!ALGORITHMS[key] || key === S.algorithm) return;
+    const lim = ALGORITHMS[key];
+    let rows = S.rows, cols = S.cols, level = S.level, clamped = false;
+    if (rows > lim.max) { rows = lim.max; clamped = true; }
+    if (cols > lim.max) { cols = lim.max; clamped = true; }
+    if (rows < lim.min) { rows = lim.min; clamped = true; }
+    if (cols < lim.min) { cols = lim.min; clamped = true; }
+    if (clamped) level = 'custom';
+    clearSizeError();
+    newGame({ algorithm: key, level, rows, cols });
+    toast(clamped
+      ? `已切换为${lim.label}算法，尺寸调整为 ${cols}×${rows}`
+      : `已切换为${lim.label}算法`);
+  }
+
+  function validateSize(rows, cols) {
+    const lim = ALGORITHMS[S.algorithm];
+    if (!Number.isInteger(rows) || !Number.isInteger(cols)) return '宽和高必须是整数';
+    if (cols < lim.min) return `宽度不能小于 ${lim.min}（当前 ${cols}）`;
+    if (cols > lim.max) return `${lim.label}算法宽度上限 ${lim.max}（当前 ${cols}）`;
+    if (rows < lim.min) return `高度不能小于 ${lim.min}（当前 ${rows}）`;
+    if (rows > lim.max) return `${lim.label}算法高度上限 ${lim.max}（当前 ${rows}）`;
+    if (rows * cols > lim.maxArea) return `${lim.label}算法面积上限 ${lim.maxArea} 格（当前 ${rows * cols}）`;
+    return '';
+  }
+
+  function showSizeError(msg) {
+    if (!els.sizeError) return;
+    els.sizeError.textContent = msg;
+    els.sizeError.classList.add('show');
+  }
+
+  function clearSizeError() {
+    if (!els.sizeError) return;
+    els.sizeError.textContent = '';
+    els.sizeError.classList.remove('show');
+  }
+
+  function fillSizeInputs() {
+    if (!els.sizeCols || !els.sizeRows) return;
+    const lim = ALGORITHMS[S.algorithm];
+    for (const input of [els.sizeCols, els.sizeRows]) {
+      input.min = lim.min;
+      input.max = lim.max;
+    }
+    els.sizeCols.value = String(S.cols);
+    els.sizeRows.value = String(S.rows);
+  }
+
+  function applyCustomSize() {
+    const cols = parseInt(els.sizeCols.value, 10);
+    const rows = parseInt(els.sizeRows.value, 10);
+    const err = validateSize(rows, cols);
+    if (err) {
+      showSizeError(err);
+      toast(err);
+      play('error');
+      return;
+    }
+    clearSizeError();
+    closeDrawer();
+    newGame({ level: 'custom', rows, cols });
+    toast(`已应用自定义尺寸 ${cols}×${rows}`);
+  }
+
+  /** 标出在当前窗口下格子会过小的档位（不隐藏，交给玩家决定） */
+  function updateLevelAvailability() {
+    if (!els.levelList) return;
+    const rect = els.stage.getBoundingClientRect();
+    const maxW = Math.max(160, rect.width - 18);
+    const maxH = Math.max(160, rect.height - 18);
+    for (const row of els.levelList.children) {
+      const dims = orientedDims(row.dataset.level);
+      const cell = Math.min(maxW / (dims.cols + 0.9), maxH / (dims.rows + 0.9));
+      row.dataset.small = cell < MIN_CELL ? '1' : '0';
+    }
+    if (els.levelHint) {
+      els.levelHint.textContent = '棋盘会按窗口自适应；标「小屏偏小」的档位建议横屏或放大窗口。';
+    }
+    syncUI();
+  }
+
+  function openDrawer() {
+    updateLevelAvailability();
+    fillSizeInputs();
+    clearSizeError();
+    els.drawer.classList.add('open');
+    els.backdrop.classList.add('show');
+    els.drawer.setAttribute('aria-hidden', 'false');
+    try { els.drawerClose.focus({ preventScroll: true }); } catch (_) {}
+  }
+
+  function closeDrawer() {
+    els.drawer.classList.remove('open');
+    els.backdrop.classList.remove('show');
+    els.drawer.setAttribute('aria-hidden', 'true');
+  }
+
+  function isDrawerOpen() {
+    return els.drawer.classList.contains('open');
+  }
+
+  /* ---------------- 全屏 ---------------- */
+  function fullscreenSupported() {
+    const el = document.documentElement;
+    return !!(el.requestFullscreen || el.webkitRequestFullscreen);
+  }
+
+  function fullscreenActive() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement);
+  }
+
+  function syncFullscreenUI() {
+    if (!els.fullscreen) return;
+    const on = fullscreenActive();
+    els.fullscreen.setAttribute('aria-pressed', on ? 'true' : 'false');
+    els.fullscreen.setAttribute('aria-label', on ? '退出全屏' : '进入全屏');
+    els.fullscreen.innerHTML = on ? icon.collapse() : icon.expand();
+  }
+
+  async function toggleFullscreen() {
+    if (!fullscreenSupported()) {
+      toast('当前浏览器不支持全屏');
+      return;
+    }
+    try {
+      const el = document.documentElement;
+      if (!fullscreenActive()) {
+        if (el.requestFullscreen) await el.requestFullscreen({ navigationUI: 'hide' });
+        else el.webkitRequestFullscreen();
+      } else if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    } catch (_) {
+      toast('全屏切换失败');
+    }
+  }
+
+  // 依据视口挑一个「岛不会小到点不准」的默认尺寸，最大不超过 Medium
+  function defaultLevelForViewport() {
+    const availW = Math.min(window.innerWidth - 32, 880);
+    const availH = window.innerHeight - 210;
+    for (const key of ['medium', 'small', 'mini']) {
+      const dims = orientedDims(key);
+      const cell = Math.min(availW / (dims.cols + 0.9), Math.max(120, availH) / (dims.rows + 0.9));
+      if (cell >= 32) return key;
+    }
+    return 'mini';
+  }
+
+  /* ---------------- 事件 ---------------- */
+  // 容器尺寸变化（字体加载、工具栏换行、软键盘等）都会触发重排
+  if (typeof ResizeObserver !== 'undefined') {
+    let roFrame = 0;
+    const ro = new ResizeObserver(() => {
+      if (roFrame) return;
+      roFrame = requestAnimationFrame(() => {
+        roFrame = 0;
+        layout();
+        if (isDrawerOpen()) updateLevelAvailability();
+      });
+    });
+    ro.observe(els.stage);
+    ro.observe(document.querySelector('.toolbar'));
+  }
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { layout(); if (isDrawerOpen()) updateLevelAvailability(); });
+  }
+
+  let resizeTimer = 0;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { layout(); if (isDrawerOpen()) updateLevelAvailability(); }, 120);
+  });
+
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => { layout(); if (isDrawerOpen()) updateLevelAvailability(); }, 260);
+  });
+
+  els.undo.addEventListener('click', undo);
+  els.redo.addEventListener('click', redo);
+  els.hint.addEventListener('click', doHint);
+  els.restart.addEventListener('click', restart);
+  els.fresh.addEventListener('click', () => newGame(S.level));
+
+  if (els.fullscreen) {
+    if (!fullscreenSupported()) {
+      els.fullscreen.style.display = 'none';
+    } else {
+      els.fullscreen.addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', syncFullscreenUI);
+      document.addEventListener('webkitfullscreenchange', syncFullscreenUI);
+      syncFullscreenUI();
+    }
+  }
+
+  els.settings.addEventListener('click', openDrawer);
+  els.levelBtn.addEventListener('click', openDrawer);
+  els.drawerClose.addEventListener('click', closeDrawer);
+  els.backdrop.addEventListener('click', closeDrawer);
+
+  els.optSound.addEventListener('change', () => {
+    setSound(els.optSound.checked);
+    if (S.soundOn) play('place');
+    save();
+  });
+
+  els.optTheme.addEventListener('change', () => {
+    applyTheme(els.optTheme.checked ? 'dark' : 'light');
+    save();
+  });
+
+  els.help.addEventListener('click', () => { closeDrawer(); showHelp(); });
+
+  els.algoGroup.addEventListener('click', ev => {
+    const btn = ev.target.closest('.seg');
+    if (!btn) return;
+    selectAlgorithm(btn.dataset.algo);
+  });
+
+  els.applySize.addEventListener('click', applyCustomSize);
+  for (const input of [els.sizeCols, els.sizeRows]) {
+    input.addEventListener('input', clearSizeError);
+    input.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') { ev.preventDefault(); applyCustomSize(); }
+    });
+  }
+
+  let clearArmed = false;
+  els.clearBests.addEventListener('click', () => {
+    if (!clearArmed) {
+      clearArmed = true;
+      els.clearBests.classList.add('danger');
+      els.clearBests.textContent = '再点一次确认清空';
+      setTimeout(() => {
+        if (!clearArmed) return;
+        clearArmed = false;
+        els.clearBests.classList.remove('danger');
+        els.clearBests.textContent = '清空最佳成绩';
+      }, 3200);
+      return;
+    }
+    clearArmed = false;
+    bests = {};
+    persistBests();
+    els.clearBests.classList.remove('danger');
+    els.clearBests.textContent = '清空最佳成绩';
+    syncUI();
+    toast('最佳成绩已清空');
+  });
+
+  function setSound(on) {
+    S.soundOn = on;
+    if (els.optSound) els.optSound.checked = on;
+  }
+
+  window.addEventListener('keydown', ev => {
+    if (ev.metaKey || ev.ctrlKey) {
+      if (ev.key.toLowerCase() === 'z') {
+        ev.preventDefault();
+        ev.shiftKey ? redo() : undo();
+      }
+      return;
+    }
+    const k = ev.key.toLowerCase();
+    if (k === 'escape') {
+      if (isDrawerOpen()) { closeDrawer(); return; }
+      closeOverlay();
+      S.selected = -1;
+      requestDraw();
+    } else if (k === 's') {
+      if (isDrawerOpen()) closeDrawer(); else openDrawer();
+    } else if (k === 'f') toggleFullscreen();
+    else if (k === 'u') undo();
+    else if (k === 'r') restart();
+    else if (k === 'n') newGame(S.level);
+    else if (k === 'h') doHint();
+  });
+
+  document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+  window.addEventListener('pagehide', save);
+
+  /* ---------------- 启动 ---------------- */
+  els.settings.innerHTML = icon.gear();
+  if (els.version) els.version.textContent = 'v' + VERSION;
+  readPalette();
+  loadBests();
+  buildLevelList();
+  setSound(true);
+
+  if (!restore()) {
+    newGame(defaultLevelForViewport());
+  }
+  syncUI();
+  setTimeout(() => { layout(); syncUI(); }, 60);
+
+  // 首次进入展示玩法说明（仅一次）
+  try {
+    if (!localStorage.getItem(STORE_KEY + '.seen')) {
+      setTimeout(showHelp, 420);
+      localStorage.setItem(STORE_KEY + '.seen', '1');
+    }
+  } catch (_) {}
+
+  setInterval(() => { if (S.hint && performance.now() > S.hint.until) { S.hint = null; requestDraw(); } }, 500);
+
+  // 调试/自动化入口，仅 #debug 时暴露
+  if (location.hash === '#debug') {
+    window.__hashi = {
+      S, view, Engine,
+      setBridge, cycleEdge, edgeBetween, bridgeAt, newGame, undo, redo, restart, doHint,
+      centerOf, redraw: requestDraw, layout, openDrawer, closeDrawer,
+      bests: () => bests, ALGORITHMS, generatePuzzle, selectAlgorithm, applyCustomSize,
+      solve() {
+        for (let i = 0; i < S.solution.length; i++) {
+          if (S.bridges[i] !== S.solution[i]) setBridge(i, S.solution[i], true);
+        }
+      }
+    };
+  }
+})();
+
+</script>
+</body>
+</html>
