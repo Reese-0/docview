@@ -935,13 +935,27 @@
         page-break-inside: avoid
       }
     }
-  </style>
+  
+/* 返回知识库（v2.1.0）：封面标题上方一处 + 正文末尾一处，均为内嵌式，不浮动 */
+/* 用 color:inherit + opacity，而不是 --muted/--blue：补丁脚本会把这段样式注入到
+   非本模板的旧页面，其中有的封面是深色 hero、有的根本没定义这两个变量，
+   写死颜色会得到一条「看不见的链接」（实测踩过）。 */
+.kbback{display:inline-block;font-family:"Noto Sans CJK SC",sans-serif;
+  font-size:13px;color:inherit;opacity:.62;text-decoration:none;letter-spacing:.02em;
+  margin:0 0 18px;transition:opacity .15s}
+.kbback:hover{opacity:1;text-decoration:underline;text-underline-offset:3px}
+.kbback .ar{margin-right:5px}
+.endback{border-top:1px solid var(--line,rgba(128,128,128,.3));margin-top:46px;padding-top:18px}
+.endback .kbback{margin:0}
+@media print{.kbback,.endback{display:none!important}}
+</style>
 </head>
 
 <body>
   <div id="prog"></div>
   <header>
-    <h1>拆书方法手册</h1>
+    <a class="kbback" href="../index.html" title="返回知识库"><span class="ar">←</span>返回我的知识库</a>
+<h1>拆书方法手册</h1>
     <div class="sub">从 2 小时 22 分教学课中提炼的可执行方法 · 讲师「小说编辑无书」（起点中文网四组编辑） · 读完约 30 分钟</div>
     <div class="meta"><span class="chip">原视频 <b>B 站 · 小说编辑无书</b></span><span class="chip">讲师
         <b>起点中文网四组编辑</b></span><span class="chip">BV号 <b>BV1cMnEzpEc2</b></span><span class="chip">时长
@@ -2115,7 +2129,8 @@
           </section>
         </section>
       </section>
-    </main>
+    <div class="endback"><a class="kbback" href="../index.html" title="返回知识库"><span class="ar">←</span>返回我的知识库</a></div>
+</main>
   </div>
   <footer>本手册为个人学习用途的知识整理，方法与案例的著作权归原作者「小说编辑无书」及视频中提及的各作品作者所有。整理与重写由 AI 完成，已通过时间戳校验（全部落在原音频片段起点 ±3 秒内）与逐字引文校验（相似度 ≥
     0.85）。如发现任何错漏，以原视频为准。</footer>

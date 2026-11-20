@@ -442,13 +442,27 @@
         padding: 8px 10px
       }
     }
-  </style>
+  
+/* 返回知识库（v2.1.0）：封面标题上方一处 + 正文末尾一处，均为内嵌式，不浮动 */
+/* 用 color:inherit + opacity，而不是 --muted/--blue：补丁脚本会把这段样式注入到
+   非本模板的旧页面，其中有的封面是深色 hero、有的根本没定义这两个变量，
+   写死颜色会得到一条「看不见的链接」（实测踩过）。 */
+.kbback{display:inline-block;font-family:"Noto Sans CJK SC",sans-serif;
+  font-size:13px;color:inherit;opacity:.62;text-decoration:none;letter-spacing:.02em;
+  margin:0 0 18px;transition:opacity .15s}
+.kbback:hover{opacity:1;text-decoration:underline;text-underline-offset:3px}
+.kbback .ar{margin-right:5px}
+.endback{border-top:1px solid var(--line,rgba(128,128,128,.3));margin-top:46px;padding-top:18px}
+.endback .kbback{margin:0}
+@media print{.kbback,.endback{display:none!important}}
+</style>
 </head>
 
 <body>
 
   <header class="hero">
-    <h1>临床心理科研工作台</h1>
+    <a class="kbback" href="../index.html" title="返回知识库"><span class="ar">←</span>返回我的知识库</a>
+<h1>临床心理科研工作台</h1>
     <p>开源为主体 · Python 为核心 · AI Agent 全流程协作的科研体系</p>
     <div class="tags">
       <span class="tag">软件清单</span><span class="tag">16 周学习路径</span>
@@ -1228,7 +1242,8 @@ Rscript install_R_packages.R          <span class="cm"># R 包（全局，只装
         research 根目录之外，processed/ 只放脱敏副本。</div>
     </section>
 
-  </main>
+  <div class="endback"><a class="kbback" href="../index.html" title="返回知识库"><span class="ar">←</span>返回我的知识库</a></div>
+</main>
 
   <footer>
     临床心理科研工作台 · 开源为主体 / Python 为核心 / AI Agent 全流程协作<br>
