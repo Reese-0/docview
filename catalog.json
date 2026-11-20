@@ -1,7 +1,16 @@
 {
-  "generatedAt": "2026-11-20T07:48:30.238Z",
-  "count": 8,
+  "generatedAt": "2026-11-20T08:27:55.759Z",
+  "count": 9,
   "posts": [
+    {
+      "title": "写小说的十个反直觉决定",
+      "file": "写小说的十个反直觉决定.html",
+      "url": "posts/%E5%86%99%E5%B0%8F%E8%AF%B4%E7%9A%84%E5%8D%81%E4%B8%AA%E5%8F%8D%E7%9B%B4%E8%A7%89%E5%86%B3%E5%AE%9A.html",
+      "date": "2026-11-20",
+      "updatedAt": "2026-11-20T16:27:23+08:00",
+      "description": "",
+      "tags": []
+    },
     {
       "title": "自然常数 e，为什么是「自然」的",
       "file": "自然常数e_知识手册.html",
