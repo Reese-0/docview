@@ -1,7 +1,16 @@
 {
-  "generatedAt": "2026-11-12T10:10:49.173Z",
-  "count": 7,
+  "generatedAt": "2026-11-20T07:48:30.238Z",
+  "count": 8,
   "posts": [
+    {
+      "title": "自然常数 e，为什么是「自然」的",
+      "file": "自然常数e_知识手册.html",
+      "url": "posts/%E8%87%AA%E7%84%B6%E5%B8%B8%E6%95%B0e_%E7%9F%A5%E8%AF%86%E6%89%8B%E5%86%8C.html",
+      "date": "2026-11-20",
+      "updatedAt": "2026-11-20T15:39:50+08:00",
+      "description": "",
+      "tags": []
+    },
     {
       "title": "如何快速提升小说写作能力：苦练基本功（1）",
       "file": "小说写作基本功_知识手册.html",
